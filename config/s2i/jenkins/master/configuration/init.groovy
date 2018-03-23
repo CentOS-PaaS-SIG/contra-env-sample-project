@@ -1,7 +1,3 @@
-import com.cloudbees.plugins.credentials.CredentialsScope
-import com.cloudbees.plugins.credentials.domains.Domain
-import com.dabsquared.gitlabjenkins.connection.GitLabApiTokenImpl
-import com.dabsquared.gitlabjenkins.connection.GitLabConnection
 import com.redhat.jenkins.plugins.ci.*
 import com.redhat.jenkins.plugins.ci.messaging.*
 import hudson.markup.RawHtmlMarkupFormatter
@@ -63,32 +59,6 @@ if ( envVarsNodePropertyList == null || envVarsNodePropertyList.size() == 0 ) {
 
 envVars.put("GIT_SSL_NO_VERIFY", "true")
 instance.save()
-
-// Add GitLab API token
-logger.info("Adding GitLab API token")
-def tokenStr = System.getenv("GITLAB_API_TOKEN") ?: ""
-if (tokenStr) {
-    logger.info("Using the value of \$GITLAB_API_TOKEN.")
-} else {
-    logger.warning("GITLAB_API_TOKEN variable not specified, using empty string. This will prevent Jenkins from " +
-            "updating the status of GitLab MRs.")
-}
-def token = new GitLabApiTokenImpl(CredentialsScope.GLOBAL, "gitlab-api-token", "GitLab API token", new Secret(tokenStr))
-globalCredentialsDomain = Domain.global()
-credentialsStore = Jenkins.instance.getExtensionList("com.cloudbees.plugins.credentials.SystemCredentialsProvider")[0].getStore()
-credentialsStore.addCredentials(globalCredentialsDomain, token)
-
-// Configure GitLab server
-logger.info("Configuring GitLab connection")
-def gitLabConfig = Jenkins.getInstance().getDescriptor("com.dabsquared.gitlabjenkins.connection.GitLabConnectionConfig")
-def gitlabConnection = new GitLabConnection("GitLab", "https://gitlab.sat.lab.tlv.redhat.com", "gitlab-api-token", true, 10, 10)
-// remove old configuration (if present) to make sure we always use up-to-date config created by this script
-gitLabConfig.getConnections().removeAll() {
-    it.getName() == gitlabConnection.name
-}
-logger.info("Adding new GitLab server")
-gitLabConfig.addConnection(gitlabConnection)
-gitLabConfig.save()
 
 logger.info("Configuring Global Pipeline Libraries")
 def sharedLibConfigs = [
