@@ -24,6 +24,8 @@ Jenkins.instance.injector.getInstance(AdminWhitelistRule.class).setMasterKillSwi
 // Set global read permission
 def strategy = Jenkins.instance.getAuthorizationStrategy()
 strategy.add(hudson.model.Hudson.READ,'anonymous')
+// users with URL will be presented with login screen
+strategy.add(hudson.model.Item.DISCOVER,'anonymous')
 Jenkins.instance.setAuthorizationStrategy(strategy)
 // Set Markup Formatter to Safe HTML so PR hyperlinks work
 Jenkins.instance.setMarkupFormatter(new RawHtmlMarkupFormatter(false))
@@ -65,7 +67,7 @@ def sharedLibConfigs = [
         new Tuple(
                 "contra-library",
                 "https://github.com/CentOS-PaaS-SIG/contra-env-sample-project",
-                ["+refs/heads/*:refs/remotes/@{remote}/*", "+refs/merge-requests/*/head:refs/remotes/@{remote}/merge-requests/*"]
+                ["+refs/heads/*:refs/remotes/origin/*  +refs/pull/*:refs/remotes/origin/pr/*"]
         )
 ]
 
