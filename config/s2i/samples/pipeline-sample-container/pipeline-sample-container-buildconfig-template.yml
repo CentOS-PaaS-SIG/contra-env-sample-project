@@ -66,4 +66,3 @@ parameters:
   displayName: VM cloud image URL
   name: VM_IMG_URL
   value: http://artifacts.ci.centos.org/artifacts/fedora-atomic/f26/images/latest-atomic.qcow2
-
