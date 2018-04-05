@@ -2,7 +2,7 @@ import org.contra.sample.pipeline.SamplePipelineUtils
 
 /**
  * A class of methods used in the Jenkinsfile pipeline.
- * These methods are wrappers around methods in the ci-pipeline library.
+ * These methods are wrappers around methods in the contra-env-sample-project library.
  */
 class samplePipelineUtils implements Serializable {
 
