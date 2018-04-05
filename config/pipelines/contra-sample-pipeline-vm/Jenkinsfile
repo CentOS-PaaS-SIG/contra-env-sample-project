@@ -20,7 +20,7 @@ IRC_CHANNEL = "#contra-ci-cd"
 executionID = UUID.randomUUID().toString()
 sampleID = 1
 
-podName = 'contra-sample-pipeline-' + executionID + '-' + sampleID
+podName = 'contra-sample-pipeline-vm' + executionID + '-' + sampleID
 
 library identifier: "contra-env-sample-project@${env.ghprbActualCommit}",
         retriever: modernSCM([$class: 'GitSCMSource',
@@ -97,12 +97,10 @@ podTemplate(name: podName,
                             currentStage = "pipeline-sample-prepare-environment"
                             stage(currentStage) {
                                 deleteDir()
-                                // Decorate our build
-                                //pipelineUtils.updateBuildDisplayAndDescription()
                                 currentBuild.displayName = "Build#: ${env.BUILD_NUMBER} - Repo: ${env.ghprbGhRepository} - OS Namespace: ${env.OPENSHIFT_NAMESPACE}"
 
                                 // Gather some info about the node we are running on for diagnostics
-                                pipelineUtils.verifyPod(OPENSHIFT_NAMESPACE, env.NODE_NAME)
+                                samplePipelineUtils.verifyPod(OPENSHIFT_NAMESPACE, env.NODE_NAME)
 
                                 // SCM
                                 dir('contra-env-sample-project') {
@@ -121,13 +119,13 @@ podTemplate(name: podName,
                             }
                             currentStage = "pipeline-sample-execute-script"
                             stage(currentStage) {
-                                pipelineUtils.executeInContainer(currentStage, "pipeline-sample-container", "${SCRIPT_LOCATION}")
+                                samplePipelineUtils.executeInContainer(currentStage, "pipeline-sample-container", "${SCRIPT_LOCATION}")
 
                             }
                             currentStage = "pipeline-sample-top-in-container"
                             stage(currentStage) {
-                                pipelineUtils.executeInContainer(currentStage, "pipeline-sample-container", "top -n 5 -b > top-output.txt")
-                                pipelineUtils.executeInContainer(currentStage, "pipeline-sample-container", "cat top-output.txt")
+                                samplePipelineUtils.executeInContainer(currentStage, "pipeline-sample-container", "top -n 5 -b > top-output.txt")
+                                samplePipelineUtils.executeInContainer(currentStage, "pipeline-sample-container", "cat top-output.txt")
                             }
                         } catch (e) {
                             // Set build result
@@ -150,12 +148,12 @@ podTemplate(name: podName,
                                 // only if this is a production build
                                 if (env.ghprbActualCommit == null || env.ghprbActualCommit == "master") {
                                     def message = "${JOB_NAME} build #${BUILD_NUMBER}: ${currentBuild.currentResult}: ${BUILD_URL}"
-                                    pipelineUtils.sendIRCNotification("${IRC_NICK}-${UUID.randomUUID()}", IRC_CHANNEL, message)
+                                    samplePipelineUtils.sendIRCNotification("${IRC_NICK}-${UUID.randomUUID()}", IRC_CHANNEL, message)
                                 }
                             }
 
                             try {
-                                pipelineUtils.getContainerLogsFromPod(OPENSHIFT_NAMESPACE, env.NODE_NAME)
+                                samplePipelineUtils.getContainerLogsFromPod(OPENSHIFT_NAMESPACE, env.NODE_NAME)
                             } catch (e) {
                                 // Report the exception
                                 echo "Warning: Could not get containerLogsFromPod: "
