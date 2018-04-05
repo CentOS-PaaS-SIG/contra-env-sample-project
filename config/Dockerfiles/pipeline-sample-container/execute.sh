@@ -7,13 +7,14 @@ base_dir="$( pwd )"
 # Setup defaults for IMG_URL and ENABLE_VM
 export IMG_URL=${IMG_URL:=/home/images/latest-atomic.qcow2}
 export ENABLE_VM=${ENABLE_VM:=false}
+export REPO_NAME=contra-env-sample-project
 
 function clean_up {
     set +e
     ara generate junit - > ${base_dir}/logs/ansible_xunit.xml
     if [ -e "$base_dir/inventory" ]; then
         virsh screenshot --file ${base_dir}/logs/atomic-host.ppm atomic-host-fedoraah
-        ansible-playbook -vv -i hosts ${base_dir}/ci-pipeline/playbooks/setup-libvirt-image.yml -e state=absent -e skip_init=true
+        ansible-playbook -vv -i hosts ${base_dir}/${REPO_NAME}/playbooks/setup-libvirt-image.yml -e state=absent -e skip_init=true
     fi
 }
 trap clean_up EXIT SIGHUP SIGINT SIGTERM
@@ -62,7 +63,7 @@ EOF
 EOF
 
     # Start test VM
-    ansible-playbook -vv -i hosts ${base_dir}/ci-pipeline/playbooks/setup-libvirt-image.yml -e state=present -e skip_init=true
+    ansible-playbook -vv -i hosts ${base_dir}/${REPO_NAME}/playbooks/setup-libvirt-image.yml -e state=present -e skip_init=true
 
     # For running playbook on a cloud image VM inside the sample pipeline container
     ipaddress=$(cat libvirt-hosts | awk -F= '/ansible_ssh_host=/ { print $2 }')
@@ -71,8 +72,8 @@ EOF
     $ipaddress ansible_user=admin ansible_ssh_pass=admin ansible_become=true ansible_become_pass=admin
 EOF
     echo "Running example playbook on a cloud VM image inside the sample pipeline container"
-    ansible-playbook -vv -i inventory ${base_dir}/ci-pipeline/playbooks/pipeline-sample-boot-verify.yml -l pipeline_sample_container_slave
+    ansible-playbook -vv -i inventory ${base_dir}/${REPO_NAME}/playbooks/pipeline-sample-boot-verify.yml -l pipeline_sample_container_slave
 else
     echo "Running example playbook on the sample pipeline container"
-    ansible-playbook -vv -i hosts ${base_dir}/ci-pipeline/playbooks/pipeline-sample.yml
+    ansible-playbook -vv -i hosts ${base_dir}/${REPO_NAME}/playbooks/pipeline-sample.yml
 fi

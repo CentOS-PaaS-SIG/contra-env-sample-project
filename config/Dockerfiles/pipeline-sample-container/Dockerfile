@@ -1,6 +1,6 @@
 FROM centos:7
-MAINTAINER "Brent Baude" <bbaude@redhat.com>
-LABEL maintainer "https://github.com/CentOS-PaaS-SIG/ci-pipeline"
+MAINTAINER "Ari LiVigni" <ari@redhat.com>
+LABEL maintainer "https://github.com/CentOS-PaaS-SIG/contra-env-sample-project"
 LABEL description="This container is meant to boot a qcow2 image"
 
 ENV container docker
