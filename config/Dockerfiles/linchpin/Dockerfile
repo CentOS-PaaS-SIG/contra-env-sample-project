@@ -1,7 +1,7 @@
-FROM fedora:latest
+FROM fedora:27
 
 LABEL maintainer="rnester@redhat.com, cmays@redhat.com, ari@redhat.com"
-LABEL version="0.0.1"
+LABEL version="0.0.2"
 LABEL description="A container to set up infrastructure instances"
 
 RUN dnf install -y git \
