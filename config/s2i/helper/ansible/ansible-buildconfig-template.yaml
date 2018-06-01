@@ -51,7 +51,7 @@ parameters:
 - description: The subdirectory inside the repo, containing the Dockerfile
   displayName: Context Directory
   name: REPO_CONTEXTDIR
-  value: config/Dockerfiles/ansible
+  value: config/dockerfiles/ansible
 - description: The git ref or tag to use for customization.
   displayName: Git Reference
   name: REPO_REF
