@@ -16,8 +16,8 @@ RUN dnf install -y git \
         make \
         gcc \
         libxml2-python \
-        libxslt-python \ &&
-    dnf clean all
+        libxslt-python \
+    && dnf clean all
 
 WORKDIR /root/
 
