@@ -1,8 +1,24 @@
 FROM fedora:28
+MAINTAINER Contra ari@redhat.com
 
-LABEL maintainer="rnester@redhat.com, cmays@redhat.com, ari@redhat.com"
-LABEL version="0.0.3"
-LABEL description="A container to set up infrastructure instances"
+LABEL name="contrainfra/linchpin-executor" \
+      maintainer="rnester@redhat.com, cmays@redhat.com, ari@redhat.com" \
+      version="0.0.4" \
+      description="A container to set up infrastructure instances" \
+      run='docker run -tdi --name ${NAME} \
+      -u 123456 \
+      ${IMAGE}' \
+      io.k8s.description="A container to set up infrastructure instances ....." \
+      io.k8s.display-name="linchin-executor" \
+      io.openshift.expose-services="" \
+      io.openshift.tags="contra,linchpin-executor,linchpin"
+
+
+ENV APP_ROOT=/home/linchpin/
+ENV PATH=${APP_ROOT}/bin:${PATH} HOME=${APP_ROOT}
+
+COPY ansible.cfg .ansible.cfg
+COPY bin/ ${APP_ROOT}/bin/
 
 RUN dnf install -y git \
         wget \
@@ -16,15 +32,18 @@ RUN dnf install -y git \
         make \
         gcc \
         libxml2-python \
-        libxslt-python \
-    && dnf clean all
+        libxslt-python && \
+    dnf clean all && \
+    pip install git+git://github.com/CentOS-PaaS-SIG/linchpin.git#egg=linchpin[beaker] && \
+    chmod -R u+x ${APP_ROOT}/bin && \
+    chgrp -R 0 ${APP_ROOT} && \
+    chmod -R g=u ${APP_ROOT} /etc/passwd
 
-WORKDIR /root/
+### Containers should NOT run as root as a good practice
+USER 10001
+WORKDIR ${APP_ROOT}
 
-COPY ansible.cfg .ansible.cfg
+### user name recognition at runtime w/ an arbitrary uid - for OpenShift deployments
+ENTRYPOINT [ "uid_entrypoint" ]
 
-WORKDIR /linchpin/
-
-USER root
-
-CMD ["tail", "-f", "/dev/null"]
+CMD run
