@@ -1,20 +1,32 @@
 FROM fedora:28
 
 LABEL maintainer="rnester@redhat.com, cmays@redhat.com, ari@redhat.com"
-LABEL version="0.0.3"
+LABEL version="0.0.4"
 LABEL description="A container to run test scripts"
+
+ENV APP_ROOT=/ansible/
+ENV PATH=${APP_ROOT}/bin:${PATH} HOME=${APP_ROOT}
+
+COPY ansible.cfg /etc/ansible.cfg
+
+COPY bin/ ${APP_ROOT}/bin/
 
 RUN dnf install -y ansible \
         fedpkg \
         libselinux-python \
         standard-test-roles \
-        rsync \
-    && dnf clean all
+        rsync && \
+    dnf clean all && \
+    mkdir -p ${APP_ROOT} && \
+    chmod -R u+x ${APP_ROOT}/bin && \
+    chgrp -R 0 ${APP_ROOT} && \
+    chmod -R g=u ${APP_ROOT} /etc/passwd
 
-VOLUME /ansible
+### Containers should NOT run as root as a good practice
+USER 10001
+WORKDIR ${APP_ROOT}
 
-COPY ansible.cfg /root/.ansible.cfg
+### user name recognition at runtime w/ an arbitrary uid - for OpenShift deployments
+ENTRYPOINT [ "uid_entrypoint" ]
 
-WORKDIR /ansible
-
-CMD ["tail", "-f", "/dev/null"]
+CMD run
