@@ -5,11 +5,11 @@ LABEL name="contrainfra/linchpin-executor" \
       version="0.0.4" \
       description="A container to set up infrastructure instances"
 
-
-ENV APP_ROOT=/home/linchpin/
+ENV APP_ROOT=/linchpin/
 ENV PATH=${APP_ROOT}/bin:${PATH} HOME=${APP_ROOT}
 
-COPY ansible.cfg .ansible.cfg
+COPY ansible.cfg /etc/ansible.cfg
+
 COPY bin/ ${APP_ROOT}/bin/
 
 RUN dnf install -y git \
@@ -27,6 +27,7 @@ RUN dnf install -y git \
         libxslt-python && \
     dnf clean all && \
     pip install git+git://github.com/CentOS-PaaS-SIG/linchpin.git#egg=linchpin[beaker] && \
+    mkdir -p ${APP_ROOT} && \
     chmod -R u+x ${APP_ROOT}/bin && \
     chgrp -R 0 ${APP_ROOT} && \
     chmod -R g=u ${APP_ROOT} /etc/passwd
