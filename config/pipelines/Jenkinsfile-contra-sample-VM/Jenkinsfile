@@ -20,7 +20,7 @@ IRC_CHANNEL = "#contra-ci-cd"
 executionID = UUID.randomUUID().toString()
 sampleID = 1
 
-podName = 'contra-sample-pipeline-vm' + executionID + '-' + sampleID
+podName = 'contra-sample-pipeline-' + executionID + '-' + sampleID
 
 library identifier: "contra-env-sample-project@${env.ghprbActualCommit}",
         retriever: modernSCM([$class: 'GitSCMSource',
@@ -61,7 +61,7 @@ podTemplate(name: podName,
         containers: [
                 //This adds the custom slave container to the pod. Must be first with name 'jnlp'
                 containerTemplate(name: 'jnlp',
-                        image: DOCKER_REPO_URL + '/' + OPENSHIFT_NAMESPACE + '/jenkins-' + OPENSHIFT_NAMESPACE + '-slave:' + SLAVE_TAG,
+                        image: DOCKER_REPO_URL + '/' + OPENSHIFT_NAMESPACE + '/jenkins-continuous-infra-slave:' + SLAVE_TAG,
                         ttyEnabled: false,
                         args: '${computer.jnlpmac} ${computer.name}',
                         command: '',
@@ -97,10 +97,12 @@ podTemplate(name: podName,
                             currentStage = "pipeline-sample-prepare-environment"
                             stage(currentStage) {
                                 deleteDir()
+                                // Decorate our build
+                                //pipelineUtils.updateBuildDisplayAndDescription()
                                 currentBuild.displayName = "Build#: ${env.BUILD_NUMBER} - Repo: ${env.ghprbGhRepository} - OS Namespace: ${env.OPENSHIFT_NAMESPACE}"
 
                                 // Gather some info about the node we are running on for diagnostics
-                                samplePipelineUtils.verifyPod(OPENSHIFT_NAMESPACE, env.NODE_NAME)
+                                pipelineUtils.verifyPod(OPENSHIFT_NAMESPACE, env.NODE_NAME)
 
                                 // SCM
                                 dir('contra-env-sample-project') {
@@ -119,13 +121,13 @@ podTemplate(name: podName,
                             }
                             currentStage = "pipeline-sample-execute-script"
                             stage(currentStage) {
-                                samplePipelineUtils.executeInContainer(currentStage, "pipeline-sample-container", "${SCRIPT_LOCATION}")
+                                pipelineUtils.executeInContainer(currentStage, "pipeline-sample-container", "${SCRIPT_LOCATION}")
 
                             }
                             currentStage = "pipeline-sample-top-in-container"
                             stage(currentStage) {
-                                samplePipelineUtils.executeInContainer(currentStage, "pipeline-sample-container", "top -n 5 -b > top-output.txt")
-                                samplePipelineUtils.executeInContainer(currentStage, "pipeline-sample-container", "cat top-output.txt")
+                                pipelineUtils.executeInContainer(currentStage, "pipeline-sample-container", "top -n 5 -b > top-output.txt")
+                                pipelineUtils.executeInContainer(currentStage, "pipeline-sample-container", "cat top-output.txt")
                             }
                         } catch (e) {
                             // Set build result
@@ -148,12 +150,12 @@ podTemplate(name: podName,
                                 // only if this is a production build
                                 if (env.ghprbActualCommit == null || env.ghprbActualCommit == "master") {
                                     def message = "${JOB_NAME} build #${BUILD_NUMBER}: ${currentBuild.currentResult}: ${BUILD_URL}"
-                                    samplePipelineUtils.sendIRCNotification("${IRC_NICK}-${UUID.randomUUID()}", IRC_CHANNEL, message)
+                                    pipelineUtils.sendIRCNotification("${IRC_NICK}-${UUID.randomUUID()}", IRC_CHANNEL, message)
                                 }
                             }
 
                             try {
-                                samplePipelineUtils.getContainerLogsFromPod(OPENSHIFT_NAMESPACE, env.NODE_NAME)
+                                pipelineUtils.getContainerLogsFromPod(OPENSHIFT_NAMESPACE, env.NODE_NAME)
                             } catch (e) {
                                 // Report the exception
                                 echo "Warning: Could not get containerLogsFromPod: "
