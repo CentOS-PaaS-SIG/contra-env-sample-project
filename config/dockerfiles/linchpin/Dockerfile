@@ -1,17 +1,9 @@
 FROM fedora:28
-MAINTAINER Contra ari@redhat.com
 
 LABEL name="contrainfra/linchpin-executor" \
       maintainer="rnester@redhat.com, cmays@redhat.com, ari@redhat.com" \
       version="0.0.4" \
-      description="A container to set up infrastructure instances" \
-      run='docker run -tdi --name ${NAME} \
-      -u 123456 \
-      ${IMAGE}' \
-      io.k8s.description="A container to set up infrastructure instances ....." \
-      io.k8s.display-name="linchin-executor" \
-      io.openshift.expose-services="" \
-      io.openshift.tags="contra,linchpin-executor,linchpin"
+      description="A container to set up infrastructure instances"
 
 
 ENV APP_ROOT=/home/linchpin/
