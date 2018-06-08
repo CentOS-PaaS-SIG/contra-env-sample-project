@@ -1,14 +1,15 @@
 FROM fedora:28
 
-LABEL maintainer="rnester@redhat.com, cmays@redhat.com, ari@redhat.com"
-LABEL version="0.0.4"
-LABEL description="A container to set up infrastructure instances"
+LABEL name="contrainfra/linchpin-executor" \
+      maintainer="rnester@redhat.com, cmays@redhat.com, ari@redhat.com" \
+      version="0.0.4" \
+      description="A container to set up infrastructure instances"
 
 ENV APP_ROOT=/linchpin/
 ENV PATH=${APP_ROOT}/bin:${PATH} HOME=${APP_ROOT}
 
-COPY ansible.cfg /etc/ansible.cfg
 
+COPY ansible.cfg /etc/ansible.cfg
 COPY bin/ ${APP_ROOT}/bin/
 
 RUN dnf install -y git \

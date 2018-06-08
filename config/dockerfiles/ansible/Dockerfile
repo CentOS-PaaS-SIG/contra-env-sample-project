@@ -1,15 +1,15 @@
 FROM fedora:28
 
-LABEL maintainer="rnester@redhat.com, cmays@redhat.com, ari@redhat.com"
-LABEL version="0.0.4"
-LABEL description="A container to run test scripts"
+LABEL name="contrainfra/ansible-executor" \
+      maintainer="rnester@redhat.com, cmays@redhat.com, ari@redhat.com" \
+      version="0.0.4" \
+      description="A container to run test scripts"
 
 ENV APP_ROOT=/ansible/
 ENV PATH=${APP_ROOT}/bin:${PATH} HOME=${APP_ROOT}
 
 COPY ansible.cfg /etc/ansible.cfg
-
-COPY bin/ ${APP_ROOT}/bin/
+COPY bin/ ${APP_ROOT}/bin/]
 
 RUN dnf install -y ansible \
         fedpkg \
