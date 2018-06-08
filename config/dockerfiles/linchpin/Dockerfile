@@ -8,6 +8,7 @@ LABEL name="contrainfra/linchpin-executor" \
 ENV APP_ROOT=/linchpin/
 ENV PATH=${APP_ROOT}/bin:${PATH} HOME=${APP_ROOT}
 
+
 COPY ansible.cfg /etc/ansible.cfg
 
 COPY bin/ ${APP_ROOT}/bin/
