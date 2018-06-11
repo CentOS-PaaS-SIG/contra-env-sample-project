@@ -9,7 +9,7 @@ ENV APP_ROOT=/linchpin/
 ENV PATH=${APP_ROOT}/bin:${PATH} HOME=${APP_ROOT}
 
 
-COPY ansible.cfg /etc/ansible.cfg
+COPY ansible.cfg /etc/ansible/ansible.cfg
 COPY bin/ ${APP_ROOT}/bin/
 
 RUN dnf install -y git \
