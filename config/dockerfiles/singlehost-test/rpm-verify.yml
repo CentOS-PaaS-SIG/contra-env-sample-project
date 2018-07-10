@@ -1,0 +1,26 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Get list of rpms
+      find:
+        paths: "{{ rpm_repo }}"
+        patterns: '*.rpm'
+      register: rpmlist
+    - name: Check which rpms are installed
+      dnf:
+        name: "{{ item.path }}"
+        state: present
+      register: rpmoutput
+      check_mode: yes
+      ignore_errors: yes
+      with_items:
+        - "{{ rpmlist.files }}"
+    - name: See if at least one rpm is installed
+      set_fact:
+        myresult: pass
+      when: item.changed == false and item.failed == false
+      with_items:
+        - "{{ rpmoutput.results }}"
+    - name: Fail if none were installed
+      fail:
+      when: myresult is not defined
