@@ -17,11 +17,11 @@ properties(
                                 string(defaultValue: "${env.ghprbGhRepository}", description: '', name: 'ghprbGhRepository'),
                                 string(defaultValue: '', description: '', name: 'ghprbPullId'),
                                 string(defaultValue: '', description: '', name: 'ghprbPullAuthorLogin'),
-                                string(defaultValue: "${env.OPENSHIFT_NAMESPACE}", description: 'Project namespace for Openshift operations', name: 'OPENSHIFT_NAMESPACE'),
+                                string(defaultValue: "${env.OPENSHIFT_NAMESPACE}, description: 'Project namespace for Openshift operations', name: 'OPENSHIFT_NAMESPACE'),
                                 string(defaultValue: "${env.DOCKER_REPO_URL}", description: 'The internal docker registry url', name: 'DOCKER_REPO_URL'),
-                                string(defaultValue: "${env.RPMBUILD_TAG}", description: 'The rpmbuild image tag', name: 'RPMBUILD_TAG'),
-                                string(defaultValue: "${env.CLOUD_IMAGE_COMPOSE_TAG}", description: 'The cloud-image-compose image tag', name: 'CLOUD_IMAGE_COMPOSE_TAG'),
-                                string(defaultValue: "${env.SINGLEHOST_TEST_TAG}", description: 'The singlehost-test image tag', name: 'SINGLEHOST_TEST_TAG')
+                                string(defaultValue: 'stable', description: 'The rpmbuild image tag', name: 'RPMBUILD_TAG'),
+                                string(defaultValue: 'stable', description: 'The cloud-image-compose image tag', name: 'CLOUD_IMAGE_COMPOSE_TAG'),
+                                string(defaultValue: 'stable', description: 'The singlehost-test image tag', name: 'SINGLEHOST_TEST_TAG')
 
 
                         ]
