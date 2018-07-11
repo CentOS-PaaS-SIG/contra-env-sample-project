@@ -23,7 +23,7 @@ properties(
                                 string(defaultValue: '172.30.1.1:5000', description: 'The internal docker registry url', name: 'DOCKER_REPO_URL'),
                                 string(defaultValue: 'stable', description: 'The rpmbuild image tag', name: 'RPMBUILD_TAG'),
                                 string(defaultValue: 'stable', description: 'The cloud-image-compose image tag', name: 'CLOUD_IMAGE_COMPOSE_TAG'),
-                                string(defaultValue: 'stable', description: 'The singlehost-test image tag', name: 'SINGLEHOST_TEST_TAG')
+                                string(defaultValue: 'stable', description: 'The singlehost-test image tag', name: 'SINGLEHOST_TEST_TAG'),
                                 string(defaultValue: CANNED_CI_MESSAGE, description: 'Default ci message', name: CI_MESSAGE)
 
                         ]
