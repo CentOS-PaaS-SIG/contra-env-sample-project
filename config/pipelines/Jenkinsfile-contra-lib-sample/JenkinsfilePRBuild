@@ -62,7 +62,7 @@ deployOpenShiftTemplate(podName: podName, containersWithProps: containers, docke
                completeMsg: msgComplete, errorMsg: msgError) {
 
         stage('rpm-build') {
-            rpmBuildPR(repo: prMessage['repo'], id: prMessage['id'], uid: prMessage['uid'])
+            rpmBuildPR(repo: prMessage['repo'], id: prMessage['id'], uid: prMessage['uid'], branch: prMessage['branch'])
         }
 
         stage('repo-query') {
