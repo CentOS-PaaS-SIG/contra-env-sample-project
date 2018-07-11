@@ -1,6 +1,6 @@
 CANNED_CI_MESSAGE = '{"build_id":1104742,"old":0,"name":"krb5","task_id":28114680,"attribute":"state","request":["git+https://src.fedoraproject.org/rpms/krb5.git#40a05d03472a1bcc7aa57f32273357732b2fe895","f28-candidate",{}],"instance":"primary","epoch":null,"version":"1.16.1","owner":"rharwood","new":1,"release":"10.fc28","topic":"org.fedoraproject.prod.buildsys.build.state.change"}'
 
-def libraries = ['contra-lib': ['jmsMessages', 'https://github.com/joejstuart/contra-lib.git']]
+def libraries = ['contra-lib': ['master', 'https://github.com/openshift/contra-lib.git']]
 
 libraries.each { name, repo ->
     library identifier: "${name}@${repo[0]}",
