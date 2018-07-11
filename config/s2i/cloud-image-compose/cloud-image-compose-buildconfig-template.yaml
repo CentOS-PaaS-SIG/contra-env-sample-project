@@ -48,7 +48,7 @@ parameters:
 - description: The sub-directory inside the repository.
   displayName: Context Directory
   name: REPO_CONTEXTDIR
-  value: config/Dockerfiles/cloud-image-compose
+  value: config/dockerfiles/cloud-image-compose
 - description: The git ref or tag to use for customization.
   displayName: Git Reference
   name: REPO_REF
