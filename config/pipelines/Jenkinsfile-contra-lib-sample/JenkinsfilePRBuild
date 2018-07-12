@@ -25,10 +25,10 @@ properties(
                                 string(defaultValue: '', description: '', name: 'ghprbPullAuthorLogin'),
                                 string(defaultValue: "${env.OPENSHIFT_NAMESPACE}", description: 'Project namespace for Openshift operations', name: 'OPENSHIFT_NAMESPACE'),
                                 string(defaultValue: "${env.DOCKER_REPO_URL}", description: 'The internal docker registry url', name: 'DOCKER_REPO_URL'),
-                                string(defaultValue: 'stable', description: 'The rpmbuild image tag', name: 'RPMBUILD_TAG'),
-                                string(defaultValue: 'stable', description: 'The cloud-image-compose image tag', name: 'CLOUD_IMAGE_COMPOSE_TAG'),
-                                string(defaultValue: 'stable', description: 'The singlehost-test image tag', name: 'SINGLEHOST_TEST_TAG'),
-                                string(defaultValue: CANNED_CI_MESSAGE, description: 'The ci message to build from', name: 'CI_MESSAGE')
+                                string(defaultValue: 'latest', description: 'The rpmbuild image tag', name: 'RPMBUILD_TAG'),
+                                string(defaultValue: 'latest', description: 'The cloud-image-compose image tag', name: 'CLOUD_IMAGE_COMPOSE_TAG'),
+                                string(defaultValue: 'latest', description: 'The singlehost-test image tag', name: 'SINGLEHOST_TEST_TAG'),
+                                string(defaultValue: "${CANNED_CI_MESSAGE}", description: 'The ci message to build from', name: 'CI_MESSAGE')
 
 
                         ]
@@ -56,8 +56,13 @@ env.OPENSHIFT_NAMESPACE = env.OPENSHIFT_NAMESPACE ?: 'contra-sample-project'
 prMessage = prMessage(message: env.CI_MESSAGE)
 
 msgHeader = fedMsgHeader(repo: prMessage['repo'], namespace: 'contra-env-sample', username: prMessage['username'])
-msgComplete = fedMsgComplete(header: msgHeader)
-msgError = fedMsgError(header: msgHeader)
+// uncomment to send a fedmsg
+// msgComplete = fedMsgComplete(header: msgHeader)
+// msgError = fedMsgError(header: msgHeader)
+
+// comment out to send fedmsg
+msgComplete = [:]
+msgError = [:]
 
 deployOpenShiftTemplate(podName: podName, containersWithProps: containers, docker_repo_url: DOCKER_REPO_URL,
                         openshift_namespace: OPENSHIFT_NAMESPACE) {
