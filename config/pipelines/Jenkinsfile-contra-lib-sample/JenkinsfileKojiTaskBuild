@@ -51,8 +51,13 @@ env.OPENSHIFT_NAMESPACE = env.OPENSHIFT_NAMESPACE ?: 'contra-sample-project'
 message = kojiMessage(message: env.CI_MESSAGE)
 
 msgHeader = fedMsgHeader(repo: message['repo'], namespace: 'contra-env-sample', username: message['username'])
-msgComplete = fedMsgComplete(header: msgHeader)
-msgError = fedMsgError(header: msgHeader)
+// Uncomment to send fedmsg
+// msgComplete = fedMsgComplete(header: msgHeader)
+// msgError = fedMsgError(header: msgHeader)
+
+// Remove if sending fedmsg
+msgComplete = [:]
+msgError = [:]
 
 deployOpenShiftTemplate(podName: podName, containersWithProps: containers, docker_repo_url: DOCKER_REPO_URL,
                         openshift_namespace: OPENSHIFT_NAMESPACE) {
@@ -67,6 +72,7 @@ deployOpenShiftTemplate(podName: podName, containersWithProps: containers, docke
         stage('repo-query') {
             repoQuery(repo: message['repo'])
         }
+/*
 
         stage('image-compose') {
             imageCompose(package: message['repo'], branch: message['branch'], release: message['release'])
@@ -75,6 +81,6 @@ deployOpenShiftTemplate(podName: podName, containersWithProps: containers, docke
         stage('package-tests') {
             packageTests(package: message['repo'], branch: message['branch'])
         }
-
+*/
     }
 }
