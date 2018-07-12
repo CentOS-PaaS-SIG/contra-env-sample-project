@@ -1,4 +1,9 @@
 CANNED_CI_MESSAGE = '{"build_id":1104742,"old":0,"name":"krb5","task_id":28114680,"attribute":"state","request":["git+https://src.fedoraproject.org/rpms/krb5.git#40a05d03472a1bcc7aa57f32273357732b2fe895","f28-candidate",{}],"instance":"primary","epoch":null,"version":"1.16.1","owner":"rharwood","new":1,"release":"10.fc28","topic":"org.fedoraproject.prod.buildsys.build.state.change"}'
+env.DOCKER_REPO_URL = env.DOCKER_REPO_URL ?: '172.30.1.1:5000'
+env.OPENSHIFT_NAMESPACE = env.OPENSHIFT_NAMESPACE ?: 'contra-sample-project'
+env.RPMBUILD_TAG = env.RPMBUILD_TAG ?: 'latest'
+env.CLOUD_IMAGE_COMPOSE_TAG = env.CLOUD_IMAGE_COMPOSE_TAG ?: 'latest'
+env.SINGLEHOST_TEST_TAG = env.SINGLEHOST_TEST_TAG ?: 'latest'
 
 def libraries = ['contra-lib': ['master', 'https://github.com/openshift/contra-lib.git']]
 
@@ -15,15 +20,11 @@ properties(
                 disableConcurrentBuilds(),
                 parameters(
                         [
-                                string(defaultValue: "${env.ghprbActualCommit}", description: '', name: 'ghprbActualCommit'),
-                                string(defaultValue: "${env.ghprbGhRepository}", description: '', name: 'ghprbGhRepository'),
-                                string(defaultValue: '', description: '', name: 'ghprbPullId'),
-                                string(defaultValue: '', description: '', name: 'ghprbPullAuthorLogin'),
-                                string(defaultValue: 'continuous-infra', description: 'Project namespace for Openshift operations', name: 'OPENSHIFT_NAMESPACE'),
-                                string(defaultValue: '172.30.1.1:5000', description: 'The internal docker registry url', name: 'DOCKER_REPO_URL'),
-                                string(defaultValue: 'latest', description: 'The rpmbuild image tag', name: 'RPMBUILD_TAG'),
-                                string(defaultValue: 'latest', description: 'The cloud-image-compose image tag', name: 'CLOUD_IMAGE_COMPOSE_TAG'),
-                                string(defaultValue: 'latest', description: 'The singlehost-test image tag', name: 'SINGLEHOST_TEST_TAG'),
+                                string(defaultValue: "${env.OPENSHIFT_NAMESPACE}", description: 'Project namespace for Openshift operations', name: 'OPENSHIFT_NAMESPACE'),
+                                string(defaultValue: "${env.DOCKER_REPO_URL}", description: 'The internal docker registry url', name: 'DOCKER_REPO_URL'),
+                                string(defaultValue: "${env.RPMBUILD_TAG}", description: 'The rpmbuild image tag', name: 'RPMBUILD_TAG'),
+                                string(defaultValue: "${env.CLOUD_IMAGE_COMPOSE_TAG}", description: 'The cloud-image-compose image tag', name: 'CLOUD_IMAGE_COMPOSE_TAG'),
+                                string(defaultValue: "${env.SINGLEHOST_TEST_TAG}", description: 'The singlehost-test image tag', name: 'SINGLEHOST_TEST_TAG'),
                                 string(defaultValue: "${CANNED_CI_MESSAGE}", description: 'Default ci message', name: 'CI_MESSAGE')
 
                         ]
@@ -46,8 +47,6 @@ containers = [
         ]
 ]
 podName = "contra-sample-pipeline-${UUID.randomUUID().toString()}"
-env.DOCKER_REPO_URL = env.DOCKER_REPO_URL ?: '172.30.1.1:5000'
-env.OPENSHIFT_NAMESPACE = env.OPENSHIFT_NAMESPACE ?: 'contra-sample-project'
 message = kojiMessage(message: env.CI_MESSAGE)
 
 msgHeader = fedMsgHeader(repo: message['repo'], namespace: 'contra-env-sample', username: message['username'])
@@ -59,8 +58,8 @@ msgHeader = fedMsgHeader(repo: message['repo'], namespace: 'contra-env-sample', 
 msgComplete = [:]
 msgError = [:]
 
-deployOpenShiftTemplate(podName: podName, containersWithProps: containers, docker_repo_url: DOCKER_REPO_URL,
-                        openshift_namespace: OPENSHIFT_NAMESPACE) {
+deployOpenShiftTemplate(podName: podName, containersWithProps: containers, docker_repo_url: env.DOCKER_REPO_URL,
+                        openshift_namespace: env.OPENSHIFT_NAMESPACE) {
 
     ciPipeline(package_name: message['repo'], buildPrefix: 'contra-env-sample', sendMetrics: false,
                completeMsg: msgComplete, errorMsg: msgError) {
