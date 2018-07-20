@@ -53,7 +53,7 @@ parameters:
 - description: The sub-directory inside the repository.
   displayName: Context Directory
   name: REPO_CONTEXTDIR
-  value: config/Dockerfiles/pipeline-sample-container
+  value: config/dockerfiles/pipeline-sample-container
 - description: The git ref or tag to use for customization.
   displayName: Git Reference
   name: REPO_REF
