@@ -2,8 +2,8 @@ FROM fedora:28
 
 LABEL name="contrainfra/ansible-executor" \
       maintainer="rnester@redhat.com, cmays@redhat.com, ari@redhat.com" \
-      version="0.0.4" \
-      description="A container to run test scripts"
+      version="0.0.5" \
+      description="A container to run test scripts, set resource configuration, etc."
 
 ENV APP_ROOT=/ansible/
 ENV PATH=${APP_ROOT}/bin:${PATH} HOME=${APP_ROOT}
@@ -15,6 +15,8 @@ RUN dnf install -y ansible \
         fedpkg \
         libselinux-python \
         standard-test-roles \
+        python-boto \
+        python-boto3 \
         rsync && \
     dnf clean all && \
     mkdir -p ${APP_ROOT} && \
