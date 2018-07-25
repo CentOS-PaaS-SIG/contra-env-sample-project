@@ -1,0 +1,91 @@
+/*
+This requires a keytab to run the rpm-build step.
+To setup your own kerberos auth. https://fedoraproject.org/wiki/Infrastructure/Kerberos
+ */
+
+CANNED_CI_MESSAGE = '{"pullrequest":{"status":"Merged","last_updated":"1524577703","branch_from":"f27-cleanup","uid":"c9772310d08a49c895e827f863b1be28","commit_stop":"14c0906269199b7aece210c5d2cce7d0f20bf167","initial_comment":"- Remove unneeded ones.\r\n- Rename patches for clarity. Update JDK-8201788\r\n  from upstream.\r\n- Add patches needed to build on more arches (Zero).\r\n\r\nScratch build with this:\r\nhttps://koji.fedoraproject.org/koji/taskinfo?taskID=26515277","title":"Clean up patches.","comments":[{"comment":"Pull-Request has been merged by jerboaa","parent":null,"notification":true,"tree":null,"filename":null,"edited_on":null,"editor":null,"date_created":"1524577703","commit":null,"line":null,"id":9691,"user":{"fullname":"Severin Gehwolf","name":"jerboaa"}}],"id":4,"project":{"custom_keys":[],"description":"The java-openjdk package","parent":null,"date_modified":"1524224425","access_users":{"admin":["jerboaa"],"commit":[],"ticket":[],"owner":["jvanek"]},"namespace":"rpms","url_path":"rpms/java-openjdk","priorities":{},"id":30066,"access_groups":{"admin":[],"commit":[],"ticket":[]},"milestones":{},"user":{"fullname":"jiri vanek","name":"jvanek"},"date_created":"1523279267","fullname":"rpms/java-openjdk","settings":{"issues_default_to_private":false,"Minimum_score_to_merge_pull-request":-1,"pull_request_access_only":false,"Web-hooks":null,"fedmsg_notifications":true,"always_merge":false,"project_documentation":false,"Enforce_signed-off_commits_in_pull-request":false,"pull_requests":true,"Only_assignee_can_merge_pull-request":false,"issue_tracker":true},"close_status":[],"tags":[],"name":"java-openjdk"},"assignee":null,"repo_from":{"custom_keys":[],"description":"The java-openjdk package","parent":{"custom_keys":[],"description":"The java-openjdk package","parent":null,"date_modified":"1524224425","access_users":{"admin":["jerboaa"],"commit":[],"ticket":[],"owner":["jvanek"]},"namespace":"rpms","url_path":"rpms/java-openjdk","priorities":{},"id":30066,"access_groups":{"admin":[],"commit":[],"ticket":[]},"milestones":{},"user":{"fullname":"jiri vanek","name":"jvanek"},"date_created":"1523279267","fullname":"rpms/java-openjdk","settings":{"issues_default_to_private":false,"Minimum_score_to_merge_pull-request":-1,"pull_request_access_only":false,"Web-hooks":null,"fedmsg_notifications":true,"always_merge":false,"project_documentation":false,"Enforce_signed-off_commits_in_pull-request":false,"pull_requests":true,"Only_assignee_can_merge_pull-request":false,"issue_tracker":true},"close_status":[],"tags":[],"name":"java-openjdk"},"date_modified":"1523363133","access_users":{"admin":[],"commit":[],"ticket":[],"owner":["jerboaa"]},"namespace":"rpms","url_path":"fork/jerboaa/rpms/java-openjdk","priorities":{},"id":30085,"access_groups":{"admin":[],"commit":[],"ticket":[]},"milestones":{},"user":{"fullname":"Severin Gehwolf","name":"jerboaa"},"date_created":"1523363133","fullname":"forks/jerboaa/rpms/java-openjdk","settings":{"issues_default_to_private":false,"Minimum_score_to_merge_pull-request":-1,"pull_request_access_only":false,"Web-hooks":null,"fedmsg_notifications":true,"always_merge":false,"project_documentation":false,"Enforce_signed-off_commits_in_pull-request":false,"pull_requests":false,"Only_assignee_can_merge_pull-request":false,"issue_tracker":false},"close_status":[],"tags":[],"name":"java-openjdk"},"updated_on":"1524489279","commit_start":"14c0906269199b7aece210c5d2cce7d0f20bf167","branch":"f27","date_created":"1524489279","closed_at":"1524577703","remote_git":null,"closed_by":{"fullname":"Severin Gehwolf","name":"jerboaa"},"user":{"fullname":"Severin Gehwolf","name":"jerboaa"}},"agent":"jerboaa","topic":"org.fedoraproject.prod.pagure.pull-request.comment.added"}'
+env.DOCKER_REPO_URL = env.DOCKER_REPO_URL ?: '172.30.1.1:5000'
+env.OPENSHIFT_NAMESPACE = env.OPENSHIFT_NAMESPACE ?: 'contra-sample-project'
+env.RPMBUILD_TAG = env.RPMBUILD_TAG ?: 'latest'
+env.CLOUD_IMAGE_COMPOSE_TAG = env.CLOUD_IMAGE_COMPOSE_TAG ?: 'latest'
+env.SINGLEHOST_TEST_TAG = env.SINGLEHOST_TEST_TAG ?: 'latest'
+
+def libraries = ['contra-lib': ['master', 'https://github.com/openshift/contra-lib.git']]
+
+libraries.each { name, repo ->
+    library identifier: "${name}@${repo[0]}",
+            retriever: modernSCM([$class: 'GitSCMSource',
+                                  remote: repo[1]])
+
+}
+
+properties(
+        [
+                buildDiscarder(logRotator(artifactDaysToKeepStr: '30', artifactNumToKeepStr: '', daysToKeepStr: '90', numToKeepStr: '')),
+                disableConcurrentBuilds(),
+                parameters(
+                        [
+                                string(defaultValue: "${env.OPENSHIFT_NAMESPACE}", description: 'Project namespace for Openshift operations', name: 'OPENSHIFT_NAMESPACE'),
+                                string(defaultValue: "${env.DOCKER_REPO_URL}", description: 'The internal docker registry url', name: 'DOCKER_REPO_URL'),
+                                string(defaultValue: "${env.RPMBUILD_TAG}", description: 'The rpmbuild image tag', name: 'RPMBUILD_TAG'),
+                                string(defaultValue: "${env.CLOUD_IMAGE_COMPOSE_TAG}", description: 'The cloud-image-compose image tag', name: 'CLOUD_IMAGE_COMPOSE_TAG'),
+                                string(defaultValue: "${env.SINGLEHOST_TEST_TAG}", description: 'The singlehost-test image tag', name: 'SINGLEHOST_TEST_TAG'),
+                                string(defaultValue: "${CANNED_CI_MESSAGE}", description: 'The ci message to build from', name: 'CI_MESSAGE')
+
+
+                        ]
+                ),
+        ]
+)
+
+containers = [
+        'rpmbuild':
+        [
+                tag: env.RPMBUILD_TAG
+        ],
+        'cloud-image-compose':
+        [
+                tag: env.CLOUD_IMAGE_COMPOSE_TAG
+        ],
+        'singlehost-test':
+        [
+                tag: env.SINGLEHOST_TEST_TAG
+        ]
+]
+podName = "contra-sample-pipeline-${UUID.randomUUID().toString()}"
+prMessage = prMessage(message: env.CI_MESSAGE)
+
+msgHeader = fedMsgHeader(repo: prMessage['repo'], namespace: 'contra-env-sample', username: prMessage['username'])
+// uncomment to send a fedmsg
+// msgComplete = fedMsgComplete(header: msgHeader)
+// msgError = fedMsgError(header: msgHeader)
+
+// comment out to send fedmsg
+msgComplete = [:]
+msgError = [:]
+
+deployOpenShiftTemplate(podName: podName, containersWithProps: containers, docker_repo_url: env.DOCKER_REPO_URL,
+                        openshift_namespace: env.OPENSHIFT_NAMESPACE) {
+
+    ciPipeline(package_name: prMessage['repo'], buildPrefix: 'contra-env-sample', sendMetrics: false,
+               completeMsg: msgComplete, errorMsg: msgError) {
+
+        // Requires keytab setup
+        stage('rpm-build') {
+            rpmBuildPR(repo: prMessage['repo'], id: prMessage['id'], uid: prMessage['uid'], branch: prMessage['branch'])
+        }
+
+        stage('repo-query') {
+            repoQuery(repo: prMessage['repo'])
+        }
+
+        stage('image-compose') {
+            imageCompose(package: prMessage['repo'], branch: prMessage['branch'], release: prMessage['release'])
+        }
+
+        stage('package-tests') {
+            packageTests(package: prMessage['repo'], branch: prMessage['branch'])
+        }
+
+    }
+}
