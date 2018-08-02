@@ -17,6 +17,8 @@ RUN dnf install -y ansible \
         standard-test-roles \
         python-boto \
         python-boto3 \
+        python2-libcloud \
+        python3-libcloud \
         rsync && \
     dnf clean all && \
     mkdir -p ${APP_ROOT} && \
