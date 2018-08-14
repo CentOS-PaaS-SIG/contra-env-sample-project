@@ -7,7 +7,7 @@ export ANSIBLE_ACTION_PLUGINS=$ara_location/plugins/actions
 export ANSIBLE_LIBRARY=$ara_location/plugins/modules
 
 cd ${base_dir}
-git clone https://github.com/dirgim/contra-env-setup.git
+git clone https://github.com/CentOS-PaaS-SIG/contra-env-setup.git
 
 pushd ${PROJECT_REPO}
 
