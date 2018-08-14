@@ -5,7 +5,7 @@ ENV HOME=/root
 WORKDIR $HOME
 
 RUN dnf -y install python-pip ansible curl gcc python-devel python2-shade pytest \
-                   openssl-devel libvirt-daemon-driver-* libvirt-daemon \
+                   git openssl-devel libvirt-daemon-driver-* libvirt-daemon \
                    libvirt-daemon-kvm qemu-kvm libvirt-daemon-config-network \
                    libvirt-python libvirt-devel redhat-rpm-config file \
                    openssh mkisofs libvirt-client virt-install net-tools \
@@ -40,6 +40,5 @@ RUN pip install -U pip; \
 
 RUN pip install ara
 
-# /wordir should include the source code of linchpin
 VOLUME [ "/workdir" , "/sys/fs/cgroup"]
-CMD ["/root/init_libvirt.sh"]
+CMD ["/usr/sbin/init"]
