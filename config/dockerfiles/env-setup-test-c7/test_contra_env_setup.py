@@ -9,7 +9,6 @@ from subprocess import check_output
 
 @pytest.fixture
 def run_info():
-    test_run_info = {}
     playbook_id = None
     profile = None
     minishift_bin = None
@@ -128,7 +127,7 @@ def test_builds(run_info):
             ansible_executor_success = True
         if 'linchpin-executor-' in line and 'Complete' in line:
             linchpin_executor_success = True
-        if 'jenkins-' in line and 'Complete' in line:
+        if 'jenkins-' in line and 'Complete' in line and 'slave' not in line:
             jenkins_success = True
         if 'jenkins-contra-slave-' in line and 'Complete' in line:
             jenkins_contra_slave_success = True
