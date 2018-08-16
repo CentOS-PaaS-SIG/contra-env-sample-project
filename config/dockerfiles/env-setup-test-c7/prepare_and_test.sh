@@ -23,8 +23,10 @@ fi
 
 popd
 
+sed -i 's/- import_tasks: setup_nested_virt.yml/#- import_tasks: setup_nested_virt.yml/g' ${base_dir}/contra-env-setup/playbooks/roles/prereqs/tasks/main.yml
+
 /usr/bin/ansible-playbook -vv -i "localhost," ${base_dir}/contra-env-setup/playbooks/setup.yml -e user=root \
                           -e ansible_connection=local -e setup_playbook_hooks=true \
                           --extra-vars='{"hooks": ["/home/debug_vars.yml"]}'
 
-python -m pytest ${base_dir}/test_contra_env_setup.py > ${base_dir}/env_setup.log
+python -m pytest ${base_dir}/test_contra_env_setup.py -v > ${base_dir}/env_setup.log
