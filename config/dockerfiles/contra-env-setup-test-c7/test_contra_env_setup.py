@@ -60,7 +60,6 @@ def test_playbook_success(run_info):
 
     assert(playbook_id is not None)
 
-
     # Get stats for the playbook run
     stats_list_cmd = '/usr/bin/ara stats list -f json'
     stats_list = json.loads(check_output(stats_list_cmd.split()))
@@ -91,21 +90,26 @@ def test_minishift_profile(run_info):
     minishift_bin = run_info.get('minishift_bin')
     profile = run_info.get('profile')
 
-    minishift_cmd = '%s profile list' % minishift_bin
-    minishift_result = check_output(minishift_cmd.split())
     minishift_success = False
 
-    for line in minishift_result.splitlines():
-        if '- %s' % profile in line and 'Running' in line:
-            minishift_success = True
+    if minishift_bin is not None:
+        minishift_cmd = '%s profile list' % minishift_bin
+        minishift_result = check_output(minishift_cmd.split())
+
+        for line in minishift_result.splitlines():
+            if '- %s' % profile in line and 'Running' in line:
+                minishift_success = True
 
     assert(minishift_success)
 
 
 def test_buildconfigs(run_info):
     oc_bin = run_info.get('oc_bin')
-    oc_cmd = '%s get buildconfigs' % oc_bin
-    oc_result = check_output(oc_cmd.split())
+    oc_result = None
+
+    if oc_bin is not None:
+        oc_cmd = '%s get buildconfigs' % oc_bin
+        oc_result = check_output(oc_cmd.split())
 
     assert('ansible-executor' in oc_result)
     assert('linchpin-executor' in oc_result)
@@ -115,22 +119,23 @@ def test_buildconfigs(run_info):
 
 def test_builds(run_info):
     oc_bin = run_info.get('oc_bin')
-    oc_cmd = '%s get builds' % oc_bin
-    oc_result = check_output(oc_cmd.split())
     ansible_executor_success = False
     linchpin_executor_success = False
     jenkins_success = False
     jenkins_contra_slave_success = False
 
-    for line in oc_result.splitlines():
-        if 'ansible-executor-' in line and 'Complete' in line:
-            ansible_executor_success = True
-        if 'linchpin-executor-' in line and 'Complete' in line:
-            linchpin_executor_success = True
-        if 'jenkins-' in line and 'Complete' in line and 'slave' not in line:
-            jenkins_success = True
-        if 'jenkins-contra-slave-' in line and 'Complete' in line:
-            jenkins_contra_slave_success = True
+    if oc_bin is not None:
+        oc_cmd = '%s get builds' % oc_bin
+        oc_result = check_output(oc_cmd.split())
+        for line in oc_result.splitlines():
+            if 'ansible-executor-' in line and 'Complete' in line:
+                ansible_executor_success = True
+            if 'linchpin-executor-' in line and 'Complete' in line:
+                linchpin_executor_success = True
+            if 'jenkins-' in line and 'Complete' in line and 'slave' not in line:
+                jenkins_success = True
+            if 'jenkins-contra-slave-' in line and 'Complete' in line:
+                jenkins_contra_slave_success = True
  
 
     assert(ansible_executor_success)
@@ -141,50 +146,61 @@ def test_builds(run_info):
 
 def test_imagestreams(run_info):
     oc_bin = run_info.get('oc_bin')
-    oc_cmd = '%s get imagestreams' % oc_bin
-    oc_result = check_output(oc_cmd.split())
+    oc_result = None
 
-    assert('ansible-executor' in oc_result)
-    assert('linchpin-executor' in oc_result)
-    assert('jenkins-contra-slave' in oc_result)
-    assert('jenkins' in oc_result)
+    if oc_bin is not None:
+        oc_cmd = '%s get imagestreams' % oc_bin
+        oc_result = check_output(oc_cmd.split())
+
+    assert(oc_result and 'ansible-executor' in oc_result)
+    assert(oc_result and 'linchpin-executor' in oc_result)
+    assert(oc_result and 'jenkins-contra-slave' in oc_result)
+    assert(oc_result and 'jenkins' in oc_result)
 
 
 def test_services(run_info):
     oc_bin = run_info.get('oc_bin')
-    oc_cmd = '%s get services' % oc_bin
-    oc_result = check_output(oc_cmd.split())
+    oc_result = None
 
-    assert('jenkins ' in oc_result)
-    assert('jenkins-jnlp' in oc_result)
+    if oc_bin is not None:
+        oc_cmd = '%s get services' % oc_bin
+        oc_result = check_output(oc_cmd.split())
+
+    assert(oc_result and 'jenkins ' in oc_result)
+    assert(oc_result and 'jenkins-jnlp' in oc_result)
 
 
 def test_jenkins_master_pod(run_info):
     oc_bin = run_info.get('oc_bin')
     jenkins_master_pod_running = False
 
-    oc_cmd = '%s get pods' % oc_bin
-    oc_result = check_output(oc_cmd.split())
+    if oc_bin is not None:
+        oc_cmd = '%s get pods' % oc_bin
+        oc_result = check_output(oc_cmd.split())
 
-    for line in oc_result.splitlines():
-        if 'jenkins' in line and 'Running' in line:
-            jenkins_master_pod_running = True
+        for line in oc_result.splitlines():
+            if 'jenkins' in line and 'Running' in line:
+                jenkins_master_pod_running = True
 
     assert(jenkins_master_pod_running)
 
 def test_jenkins_running(run_info):
     oc_bin = run_info.get('oc_bin')
-    oc_cmd = '%s get routes' % oc_bin
-    oc_result = check_output(oc_cmd.split())
-
-    route_exists = True if ('jenkins' in oc_result) else False
-
+    route_exists = False
     jenkins_running = False
-    for line in oc_result.splitlines():
-        if 'jenkins' in line:
-            route = line.split()[1]
-            request = requests.get('https://%s/login' % route, verify=False)
-            jenkins_running = True if request.status_code == 200 else False
+
+    if oc_bin is not None:
+        oc_cmd = '%s get routes' % oc_bin
+        oc_result = check_output(oc_cmd.split())
+
+        route_exists = True if ('jenkins' in oc_result) else False
+
+        jenkins_running = False
+        for line in oc_result.splitlines():
+            if 'jenkins' in line:
+                route = line.split()[1]
+                request = requests.get('https://%s/login' % route, verify=False)
+                jenkins_running = True if request.status_code == 200 else False
 
     assert(route_exists)
     assert(jenkins_running)
