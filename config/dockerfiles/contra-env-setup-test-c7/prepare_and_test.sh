@@ -8,6 +8,7 @@ export ANSIBLE_CALLBACK_PLUGINS=$ara_location/plugins/callbacks
 export ANSIBLE_ACTION_PLUGINS=$ara_location/plugins/actions
 export ANSIBLE_LIBRARY=$ara_location/plugins/modules
 
+export USER=$(whoami)
 cd ${base_dir}
 
 # Prepare repo and logs directories

@@ -111,10 +111,10 @@ def test_buildconfigs(run_info):
         oc_cmd = '%s get buildconfigs' % oc_bin
         oc_result = check_output(oc_cmd.split())
 
-    assert('ansible-executor' in oc_result)
-    assert('linchpin-executor' in oc_result)
-    assert('jenkins-contra-slave' in oc_result)
-    assert('jenkins ' in oc_result)
+    assert(oc_result and 'ansible-executor' in oc_result)
+    assert(oc_result and 'linchpin-executor' in oc_result)
+    assert(oc_result and 'jenkins-contra-slave' in oc_result)
+    assert(oc_result and 'jenkins ' in oc_result)
 
 
 def test_builds(run_info):
