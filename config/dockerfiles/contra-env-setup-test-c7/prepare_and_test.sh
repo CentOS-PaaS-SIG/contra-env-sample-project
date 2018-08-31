@@ -2,6 +2,13 @@
 
 base_dir=/home
 
+# Set log dir to the WORKSPACE where it can be archived
+if [ ! -z "${WORKSPACE}" ]; then
+    log_dir=${WORKSPACE}
+else
+    log_dir=${base_dir}/logs
+fi
+
 # Set environment to use ara with ansible
 export ara_location=$(python -c "import os,ara; print(os.path.dirname(ara.__file__))")
 export ANSIBLE_CALLBACK_PLUGINS=$ara_location/plugins/callbacks
@@ -12,7 +19,7 @@ export USER=$(whoami)
 cd ${base_dir}
 
 # Prepare repo and logs directories
-mkdir -p ${base_dir}/logs
+mkdir -p ${log_dir}
 
 git clone https://github.com/CentOS-PaaS-SIG/contra-env-setup.git
 
@@ -39,9 +46,4 @@ sed -i 's/- import_tasks: setup_nested_virt.yml/#- import_tasks: setup_nested_vi
                           --extra-vars='{"hooks": ["/home/debug_vars.yml"]}'
 
 # Run tests with pytest
-python -m pytest ${base_dir}/test_contra_env_setup.py -v > ${base_dir}/logs/contra_env_setup.log
-
-# Copy logs to the work directory where they can be archived
-if [ ! -z "${WORKSPACE}" ]; then
-    cp ${base_dir}/logs/* ${WORKSPACE}
-fi
+python -m pytest ${base_dir}/test_contra_env_setup.py -v > ${log_dir}/contra_env_setup.log

@@ -113,7 +113,7 @@ def test_buildconfigs(run_info):
 
     assert(oc_result and 'ansible-executor' in oc_result)
     assert(oc_result and 'linchpin-executor' in oc_result)
-    assert(oc_result and 'jenkins-contra-slave' in oc_result)
+    assert(oc_result and 'jenkins-contra-sample-project-slave' in oc_result)
     assert(oc_result and 'jenkins ' in oc_result)
 
 
@@ -134,7 +134,7 @@ def test_builds(run_info):
                 linchpin_executor_success = True
             if 'jenkins-' in line and 'Complete' in line and 'slave' not in line:
                 jenkins_success = True
-            if 'jenkins-contra-slave-' in line and 'Complete' in line:
+            if 'jenkins-contra-sample-project-slave-' in line and 'Complete' in line:
                 jenkins_contra_slave_success = True
  
 
@@ -154,7 +154,7 @@ def test_imagestreams(run_info):
 
     assert(oc_result and 'ansible-executor' in oc_result)
     assert(oc_result and 'linchpin-executor' in oc_result)
-    assert(oc_result and 'jenkins-contra-slave' in oc_result)
+    assert(oc_result and 'jenkins-contra-sample-project-slave' in oc_result)
     assert(oc_result and 'jenkins' in oc_result)
 
 
