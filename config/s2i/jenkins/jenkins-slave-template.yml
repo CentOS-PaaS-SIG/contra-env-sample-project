@@ -1,32 +1,32 @@
 apiVersion: v1
 kind: Template
 labels:
-  template: jenkins-contra-slave-builder
+  template: jenkins-contra-sample-project-slave-builder
 metadata:
   annotations:
     description: Contra Sample Slaves
     iconClass: icon-jenkins
     tags: instant-app,jenkins
-  name: jenkins-contra-slave-builder
+  name: jenkins-contra-sample-project-slave-builder
 objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
     annotations:
-      slave-label: jenkins-contra-slave contra-slave
+      slave-label: jenkins-contra-sample-project-slave jenkins-contra-slave contra-slave
     labels:
       role: jenkins-slave
-    name: jenkins-contra-slave
+    name: jenkins-contra-sample-project-slave
   spec: {}
 - apiVersion: v1
   kind: BuildConfig
   metadata:
-    name: jenkins-contra-slave
+    name: jenkins-contra-sample-project-slave
   spec:
     output:
       to:
         kind: ImageStreamTag
-        name: jenkins-contra-slave:latest
+        name: jenkins-contra-sample-project-slave:latest
     resources: {}
     source:
       contextDir: ${CONTEXTDIR}
