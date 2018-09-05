@@ -68,6 +68,11 @@ def sharedLibConfigs = [
                 "contra-library",
                 "https://github.com/CentOS-PaaS-SIG/contra-env-sample-project",
                 ["+refs/heads/*:refs/remotes/origin/*  +refs/pull/*:refs/remotes/origin/pr/*"]
+        ),
+        new Tuple(
+                "contra-lib",
+                "https://github.com/openshift/contra-lib",
+                ["+refs/heads/*:refs/remotes/origin/*  +refs/pull/*:refs/remotes/origin/pr/*"]
         )
 ]
 
@@ -92,3 +97,16 @@ sharedLibConfigs.each { libConfig ->
     lib.defaultVersion = "master"
     GlobalLibraries.get().getLibraries().add(lib)
 }
+
+if (env['LOAD_SEED_JOB']) {
+    def JENKINS_SETUP_YAML = env['JENKINS_SEED_JOB'] ?: "${env['JENKINS_HOME']}/seed_job.dsl"
+    def config = new File(JENKINS_SEED_JOB).text
+
+    def workspace = new File("${env['JENKINS_HOME']}")
+    def seedJobDsl = config.seed_jobdsl
+
+    def jobManagement = new JenkinsJobManagement(System.out, [:], workspace)
+    new DslScriptLoader(jobManagement).runScript(seedJobDsl)
+    logger.info('Created seed job')
+}
+
