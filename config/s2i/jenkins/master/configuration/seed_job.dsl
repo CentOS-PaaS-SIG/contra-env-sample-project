@@ -1,7 +1,9 @@
+dslVar = System.getenv(env.DSL_JOB_REPO) ?: 'git@github.com:CentOS-PaaS-SIG/contra-env-sample-project.git'
+
 job("seed") {
   scm {
       git(
-      "${DSL_JOB_REPO}",
+      dslVar,
       'jobDsl',
       {node -> node / 'extensions' << '' })
   }
