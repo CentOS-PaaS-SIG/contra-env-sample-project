@@ -163,6 +163,10 @@ objects:
             value: 'true'
           - name: OVERRIDE_PV_PLUGINS_WITH_IMAGE_PLUGINS
             value: 'true'
+          - name: LOAD_SEED_JOB
+            value: ${LOAD_SEED_JOB}
+          - name: DSL_JOB_REPO
+            value: ${DSL_JOB_REPO}
           resources:
             limits:
               memory: "${MEMORY_LIMIT}"
