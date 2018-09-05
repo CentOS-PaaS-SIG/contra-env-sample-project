@@ -103,14 +103,13 @@ sharedLibConfigs.each { libConfig ->
 
 env = System.getenv()
 if (env['LOAD_SEED_JOB']) {
-    def JENKINS_SETUP_YAML = env['JENKINS_SEED_JOB'] ?: "${env['JENKINS_HOME']}/seed_job.dsl"
+    def JENKINS_SEED_JOB = env['JENKINS_SEED_JOB'] ?: "${env['JENKINS_HOME']}/seed_job.dsl"
     def config = new File(JENKINS_SEED_JOB).text
 
     def workspace = new File("${env['JENKINS_HOME']}")
-    def seedJobDsl = config.seed_jobdsl
 
     def jobManagement = new JenkinsJobManagement(System.out, [:], workspace)
-    new DslScriptLoader(jobManagement).runScript(seedJobDsl)
+    new DslScriptLoader(jobManagement).runScript(config)
     logger.info('Created seed job')
 }
 
