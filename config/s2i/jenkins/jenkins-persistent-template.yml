@@ -284,6 +284,6 @@ parameters:
 - name: DSL_JOB_REPO
   displayName: DSL job repo
   description: The repository of dsl jobs
-  value: 'git@github.com:CentOS-PaaS-SIG/contra-env-sample-project.git'
+  value: 'https://github.com/CentOS-PaaS-SIG/contra-env-sample-project.git'
 labels:
   template: jenkins-persistent
