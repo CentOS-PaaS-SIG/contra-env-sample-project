@@ -243,7 +243,7 @@ parameters:
   value: https://github.com/joejstuart/contra-env-sample-project
 - description: Git branch/tag reference
   name: REPO_REF
-  value: jobDsl
+  value: testEnv
 - description: Path within Git project to build; empty for root project directory.
   name: CONTEXT_DIR
   value: config/s2i/jenkins/master

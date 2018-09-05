@@ -1,7 +1,7 @@
 job("seed") {
   scm {
       git(
-      ${DSL_JOB_REPO},
+      "${DSL_JOB_REPO}",
       'jobDsl',
       {node -> node / 'extensions' << '' })
   }
