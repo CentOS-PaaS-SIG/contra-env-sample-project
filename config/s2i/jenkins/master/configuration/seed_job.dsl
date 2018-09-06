@@ -7,14 +7,12 @@ job("seed") {
         'jobDsl',
         {node -> node / 'extensions' << '' })
     }
-    triggers {
-        githubPush()
-    }
     configure {
-        it / builders << 'javaposse.jobdsl.plugin.ExecuteDslScripts'(plugin: "job-dsl@1.70") {
+        it / builders << 'javaposse.jobdsl.plugin.ExecuteDslScripts' {
+                targets('src/jobs/*.groovy')
                 sandbox('true')
-                target('src/jobs/*.groovy')
-                ignoreExisting('true')
+                usingScriptText('false')
+                ignoreExisting('false')
                 removedJobAction('DELETE')
                 removedViewAction('DELETE')
                 removedConfigFilesAction('DELETE')
