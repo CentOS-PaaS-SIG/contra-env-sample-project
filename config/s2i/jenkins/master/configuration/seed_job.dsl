@@ -7,17 +7,12 @@ job("seed") {
         'jobDsl',
         {node -> node / 'extensions' << '' })
     }
-    configure {
-        it / builders << 'javaposse.jobdsl.plugin.ExecuteDslScripts' {
-                targets('src/jobs/*.groovy')
-                sandbox('true')
-                usingScriptText('false')
-                ignoreExisting('false')
-                removedJobAction('DELETE')
-                removedViewAction('DELETE')
-                removedConfigFilesAction('DELETE')
-                lookupStrategy('JENKINS_ROOT')
-                additionalClasspath('src')
+      steps {
+        dsl {
+            external('src/jobs/*.groovy')
+            removeAction('DISABLE')
+            ignoreExisting('false')
+            additionalClasspath('lib')
         }
     }
 }
