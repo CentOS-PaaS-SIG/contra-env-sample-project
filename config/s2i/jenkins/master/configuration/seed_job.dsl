@@ -12,7 +12,7 @@ job("seed") {
   }
   steps {
       dsl {
-          external('jobs/*.groovy')
+          external('src/jobs/*.groovy')
           removeAction('DELETE')
           additionalClasspath('src')
       }   
