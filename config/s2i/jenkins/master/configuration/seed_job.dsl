@@ -16,11 +16,11 @@ job("seed") {
             removeAction('DELETE')
             additionalClasspath('src')
         }   
-    }
-    configure { node ->
-        node / builders  {
-            'javaposse.jobdsl.plugin.ExecuteDslScripts'(plugin: "job-dsl@1.70") {
-                sandbox('true')
+        configure { node ->
+            node / builders  {
+                'javaposse.jobdsl.plugin.ExecuteDslScripts'(plugin: "job-dsl@1.70") {
+                    sandbox('true')
+                }
             }
         }
     }
