@@ -15,7 +15,13 @@ job("seed") {
           external('src/jobs/*.groovy')
           removeAction('DELETE')
           additionalClasspath('src')
-          sandbox(true)
+          configure { node ->
+              node / builders  {
+                  'javaposse.jobdsl.plugin.ExecuteDslScripts'(plugin: "job-dsl@1.70") {
+                      sandbox('true')
+                  }
+              }
+          }
       }   
   }
 }

@@ -9,12 +9,12 @@ import jenkins.model.*
 import jenkins.plugins.git.GitSCMSource
 import jenkins.plugins.git.traits.RefSpecsSCMSourceTrait
 import jenkins.security.s2m.*
-import jenkins.security.s2m.*
 import org.jenkinsci.plugins.workflow.libs.GlobalLibraries
 import org.jenkinsci.plugins.workflow.libs.LibraryConfiguration
 import org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever
 import javaposse.jobdsl.dsl.DslScriptLoader
 import javaposse.jobdsl.plugin.JenkinsJobManagement
+import javaposse.jobdsl.plugin.GlobalJobDslSecurityConfiguration
 
 
 import java.util.logging.Logger
@@ -100,6 +100,9 @@ sharedLibConfigs.each { libConfig ->
     lib.defaultVersion = "master"
     GlobalLibraries.get().getLibraries().add(lib)
 }
+
+logger.info('Disabling job dsl script security')
+GlobalConfiguration.all().get(GlobalJobDslSecurityConfiguration.class).useScriptSecurity=false
 
 env = System.getenv()
 if (env['LOAD_SEED_JOB']) {
