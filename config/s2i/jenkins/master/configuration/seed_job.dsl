@@ -15,6 +15,7 @@ job("seed") {
           external('src/jobs/*.groovy')
           removeAction('DELETE')
           additionalClasspath('src')
+          sandbox()
       }   
   }
 }
