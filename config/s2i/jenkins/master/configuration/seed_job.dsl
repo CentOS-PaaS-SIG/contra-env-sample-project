@@ -11,15 +11,13 @@ job("seed") {
         githubPush()
     }
     steps {
-        dsl {
-            external('src/jobs/*.groovy')
-            removeAction('DELETE')
-            additionalClasspath('src')
-        }   
         configure { node ->
             node / builders  {
                 'javaposse.jobdsl.plugin.ExecuteDslScripts'(plugin: "job-dsl@1.70") {
                     sandbox('true')
+                    external('src/jobs/*.groovy')
+                    removeAction('DELETE')
+                    additionalClasspath('src')
                 }
             }
         }
