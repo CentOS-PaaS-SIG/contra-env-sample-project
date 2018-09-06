@@ -13,8 +13,12 @@ job("seed") {
     configure {
         it / builders << 'javaposse.jobdsl.plugin.ExecuteDslScripts'(plugin: "job-dsl@1.70") {
                 sandbox('true')
-                external('src/jobs/*.groovy')
-                removeAction('DELETE')
+                target('src/jobs/*.groovy')
+                ignoreExisting('true')
+                removedJobAction('DELETE')
+                removedViewAction('DELETE')
+                removedConfigFilesAction('DELETE')
+                lookupStrategy('JENKINS_ROOT')
                 additionalClasspath('src')
         }
     }
