@@ -11,7 +11,6 @@ job("seed") {
         dsl {
             external('src/jobs/*.groovy')
             removeAction('DISABLE')
-            ignoreExisting('false')
             additionalClasspath('lib')
         }
     }
