@@ -1,9 +1,8 @@
-multibranchPipelineJob('testPipeline') {
+multibranchPipelineJob('sampleMultiBranchPipeline') {
     branchSources {
         github {
-            scanCredentialsId('contra-sample-project-github')
             repoOwner('CentOS-PaaS-SIG')
-            repository('cloud-image-builder')
+            repository('contra-env-sample-project')
         }
     }
 }
