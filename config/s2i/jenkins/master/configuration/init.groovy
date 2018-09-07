@@ -103,7 +103,7 @@ sharedLibConfigs.each { libConfig ->
 
 
 env = System.getenv()
-if (env['LOAD_SEED_JOB']) {
+if (env['LOAD_SEED_JOB'] == 'true') {
     logger.info('Disabling job dsl script security')
     GlobalConfiguration.all().get(GlobalJobDslSecurityConfiguration.class).useScriptSecurity=false
     def JENKINS_SEED_JOB = env['JENKINS_SEED_JOB'] ?: "${env['JENKINS_HOME']}/seed_job.dsl"
