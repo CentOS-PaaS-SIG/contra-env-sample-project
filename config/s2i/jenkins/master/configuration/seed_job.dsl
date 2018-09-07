@@ -7,7 +7,10 @@ job("seed") {
         'jobDsl',
         {node -> node / 'extensions' << '' })
     }
-      steps {
+    triggers {
+        githubPush()
+    }
+    steps {
         dsl {
             external('src/jobs/*.groovy')
             removeAction('DISABLE')
