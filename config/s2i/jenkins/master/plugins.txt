@@ -46,6 +46,7 @@ github:1.29.2
 github-api:1.92
 github-branch-source:2.3.6
 github-organization-folder:1.6
+github-pr-comment-build:2.0
 gitlab-plugin:1.5.9
 git-server:1.7
 greenballs:1.15

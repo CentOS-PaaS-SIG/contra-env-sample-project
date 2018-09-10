@@ -163,6 +163,10 @@ objects:
             value: 'true'
           - name: OVERRIDE_PV_PLUGINS_WITH_IMAGE_PLUGINS
             value: 'true'
+          - name: LOAD_SEED_JOB
+            value: ${LOAD_SEED_JOB}
+          - name: DSL_JOB_REPO
+            value: ${DSL_JOB_REPO}
           resources:
             limits:
               memory: "${MEMORY_LIMIT}"
@@ -273,5 +277,13 @@ parameters:
   displayName: Jenkins ImageStreamTag
   description: Name of the ImageStreamTag to be used for the Jenkins image.
   value: jenkins:latest
+- name: LOAD_SEED_JOB
+  displayName: Load seed job
+  description: Whether to load a dsl seed job
+  value: 'true'
+- name: DSL_JOB_REPO
+  displayName: DSL job repo
+  description: The repository of dsl jobs
+  value: 'https://github.com/CentOS-PaaS-SIG/contra-env-sample-project.git'
 labels:
   template: jenkins-persistent

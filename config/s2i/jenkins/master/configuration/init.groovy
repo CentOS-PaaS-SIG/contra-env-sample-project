@@ -9,10 +9,13 @@ import jenkins.model.*
 import jenkins.plugins.git.GitSCMSource
 import jenkins.plugins.git.traits.RefSpecsSCMSourceTrait
 import jenkins.security.s2m.*
-import jenkins.security.s2m.*
 import org.jenkinsci.plugins.workflow.libs.GlobalLibraries
 import org.jenkinsci.plugins.workflow.libs.LibraryConfiguration
 import org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever
+import javaposse.jobdsl.dsl.DslScriptLoader
+import javaposse.jobdsl.plugin.JenkinsJobManagement
+import javaposse.jobdsl.plugin.GlobalJobDslSecurityConfiguration
+
 
 import java.util.logging.Logger
 
@@ -68,6 +71,11 @@ def sharedLibConfigs = [
                 "contra-library",
                 "https://github.com/CentOS-PaaS-SIG/contra-env-sample-project",
                 ["+refs/heads/*:refs/remotes/origin/*  +refs/pull/*:refs/remotes/origin/pr/*"]
+        ),
+        new Tuple(
+                "contra-lib",
+                "https://github.com/openshift/contra-lib",
+                ["+refs/heads/*:refs/remotes/origin/*  +refs/pull/*:refs/remotes/origin/pr/*"]
         )
 ]
 
@@ -92,3 +100,19 @@ sharedLibConfigs.each { libConfig ->
     lib.defaultVersion = "master"
     GlobalLibraries.get().getLibraries().add(lib)
 }
+
+
+env = System.getenv()
+if (env['LOAD_SEED_JOB'] == 'true') {
+    logger.info('Disabling job dsl script security')
+    GlobalConfiguration.all().get(GlobalJobDslSecurityConfiguration.class).useScriptSecurity=false
+    def JENKINS_SEED_JOB = env['JENKINS_SEED_JOB'] ?: "${env['JENKINS_HOME']}/seed_job.dsl"
+    def config = new File(JENKINS_SEED_JOB).text
+
+    def workspace = new File("${env['JENKINS_HOME']}")
+
+    def jobManagement = new JenkinsJobManagement(System.out, [:], workspace)
+    new DslScriptLoader(jobManagement).runScript(config)
+    logger.info('Created seed job')
+}
+
