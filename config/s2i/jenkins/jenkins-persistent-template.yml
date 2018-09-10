@@ -285,5 +285,21 @@ parameters:
   displayName: DSL job repo
   description: The repository of dsl jobs
   value: 'https://github.com/CentOS-PaaS-SIG/contra-env-sample-project.git'
+- name: ENABLE_INFLUXDB
+  displayName: Enable Influxdb
+  description: Install and configure the Influxdb plugin
+  value: 'false'
+- name: INFLUXDB_ROUTE
+  displayName: Influxdb route
+  description: The http api for Influxdb
+  value: influxdb-continuous-infra.apps.ci.centos.org
+- name: INFLUXDB_USERNAME
+  displayName: Influxdb username
+  description: The username to auth to influxdb
+  value: contra
+- name: INFLUXDB_PASSWORD
+  displayName: Influxdb password
+  description: The password to auth to influxdb
+  value: ''
 labels:
   template: jenkins-persistent
