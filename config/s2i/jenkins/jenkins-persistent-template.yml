@@ -167,6 +167,18 @@ objects:
             value: ${LOAD_SEED_JOB}
           - name: DSL_JOB_REPO
             value: ${DSL_JOB_REPO}
+          - name: ENABLE_INFLUXDB
+            value: ${ENABLE_INFLUXDB}
+          - name: INFLUXDB_ROUTE
+            value: ${INFLUXDB_ROUTE}
+          - name: INFLUXDB_USERNAME
+            value: ${INFLUXDB_USERNAME}
+          - name: INFLUXDB_PASSWORD
+            value: ${INFLUXDB_PASSWORD}
+          - name: INFLUXDB_INSTANCE
+            value: ${INFLUXDB_INSTANCE}
+          - name: INFLUXDB_DATABASE
+            value: ${INFLUXDB_DATABASE}
           resources:
             limits:
               memory: "${MEMORY_LIMIT}"
@@ -301,5 +313,13 @@ parameters:
   displayName: Influxdb password
   description: The password to auth to influxdb
   value: ''
+- name: INFLUXDB_INSTANCE
+  displayName: Influxdb instance
+  description: The name of the configured influx instance
+  value: localInflux
+- name: INFLUXDB_DATABASE
+  displayName: Influxdb database
+  description: The database to use for metrics
+  value: db0
 labels:
   template: jenkins-persistent
