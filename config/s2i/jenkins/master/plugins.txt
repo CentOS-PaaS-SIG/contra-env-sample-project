@@ -54,6 +54,7 @@ handlebars:1.1.1
 handy-uri-templates-2-api:2.1.6-1.0
 htmlpublisher:1.16
 icon-shim:2.0.3
+influxdb:1.19
 instant-messaging:1.35
 ircbot:2.30
 jackson2-api:2.8.11.3

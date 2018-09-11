@@ -33,8 +33,6 @@ job("seed") {
             external('src/jobs/*.groovy')
             removeAction('DISABLE')
             additionalClasspath(["${contraLibTarget}/src", "${dslVarTarget}/src"].join("\n")) 
-          
-     
         }
     }
 }

@@ -167,6 +167,18 @@ objects:
             value: ${LOAD_SEED_JOB}
           - name: DSL_JOB_REPO
             value: ${DSL_JOB_REPO}
+          - name: ENABLE_INFLUXDB
+            value: ${ENABLE_INFLUXDB}
+          - name: INFLUXDB_ROUTE
+            value: ${INFLUXDB_ROUTE}
+          - name: INFLUXDB_USERNAME
+            value: ${INFLUXDB_USERNAME}
+          - name: INFLUXDB_PASSWORD
+            value: ${INFLUXDB_PASSWORD}
+          - name: INFLUXDB_INSTANCE
+            value: ${INFLUXDB_INSTANCE}
+          - name: INFLUXDB_DATABASE
+            value: ${INFLUXDB_DATABASE}
           resources:
             limits:
               memory: "${MEMORY_LIMIT}"
@@ -285,5 +297,29 @@ parameters:
   displayName: DSL job repo
   description: The repository of dsl jobs
   value: 'https://github.com/CentOS-PaaS-SIG/contra-env-sample-project.git'
+- name: ENABLE_INFLUXDB
+  displayName: Enable Influxdb
+  description: Install and configure the Influxdb plugin
+  value: 'false'
+- name: INFLUXDB_ROUTE
+  displayName: Influxdb route
+  description: The http api for Influxdb
+  value: influxdb-continuous-infra.apps.ci.centos.org
+- name: INFLUXDB_USERNAME
+  displayName: Influxdb username
+  description: The username to auth to influxdb
+  value: contra
+- name: INFLUXDB_PASSWORD
+  displayName: Influxdb password
+  description: The password to auth to influxdb
+  value: ''
+- name: INFLUXDB_INSTANCE
+  displayName: Influxdb instance
+  description: The name of the configured influx instance
+  value: localInflux
+- name: INFLUXDB_DATABASE
+  displayName: Influxdb database
+  description: The database to use for metrics
+  value: db0
 labels:
   template: jenkins-persistent
