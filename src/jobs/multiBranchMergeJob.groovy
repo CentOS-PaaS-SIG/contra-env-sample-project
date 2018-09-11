@@ -1,3 +1,6 @@
+import org.centos.sample.jobdsl.MultiBranch
+
+
 jobName = 'sampleMultiBranchMerge'
 comment = '\[merge\]'
 owner = 'CentOS-PaaS-SIG'
@@ -10,18 +13,6 @@ multibranchPipelineJob(jobName) {
             repository(repo)
         }
     }   
-    configure {
-        it / sources / 'data' / 'jenkins.branch.BranchSource' << {
-            strategy(class: 'jenkins.branch.DefaultBranchPropertyStrategy') {
-                properties(class: 'java.util.Arrays$ArrayList') {
-                    a(class: 'jenkins.branch.BranchProperty-array') {
-                        'com.adobe.jenkins.github__pr__comment__build.TriggerPRCommentBranchProperty' {
-                            commentBody(comment)
-                        }   
-                    }
-                }
-            }
-        }
-    }
+    configure MultiBranch.commentTrigger(comment)
 }
 
