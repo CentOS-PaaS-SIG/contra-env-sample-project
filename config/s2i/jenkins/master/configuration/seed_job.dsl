@@ -7,6 +7,9 @@ dslVarTarget = dslVar.split('/')[1]
 contraLibTarget = contraLib.split('/')[1]
 
 job("seed") {
+    properties {
+        githubProjectUrl("https://github.com/${dslVar}")
+    }
     multiscm {
         git {
             remote {
