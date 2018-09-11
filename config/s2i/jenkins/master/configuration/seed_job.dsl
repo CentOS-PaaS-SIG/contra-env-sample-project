@@ -4,7 +4,7 @@ job("seed") {
     scm {
         git(
         dslVar,
-        'jobDsl',
+        'master',
         {node -> node / 'extensions' << '' })
     }
     triggers {
