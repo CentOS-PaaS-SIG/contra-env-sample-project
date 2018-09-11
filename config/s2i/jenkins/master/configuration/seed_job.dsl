@@ -1,4 +1,4 @@
-dslVar = 'CentOS-PaaS-SIG/contra-env-sample-project'
+dslVar = 'joejstuart/contra-env-sample-project'
 contraLib = 'joejstuart/contra-lib'
 // contraBranch = 'refs/tags/v0.0.2'
 contraBranch = 'packageUpdate'
@@ -12,7 +12,8 @@ job("seed") {
             remote {
                 github(dslVar)
 
-            }   
+            }
+            branches("commentSamples")
             extensions {
                 relativeTargetDirectory(dslVarTarget)
             }
@@ -32,7 +33,7 @@ job("seed") {
     }
     steps {
         dsl {
-            external('src/jobs/*.groovy')
+            external("${dslVarTarget}/src/jobs/*.groovy")
             removeAction('DISABLE')
             additionalClasspath(["${contraLibTarget}/src", "${dslVarTarget}/src"].join("\n")) 
         }
