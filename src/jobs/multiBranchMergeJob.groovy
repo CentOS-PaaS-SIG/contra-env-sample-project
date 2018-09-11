@@ -2,7 +2,7 @@ import org.centos.jobdsl.multiBranchJob
 
 
 jobName = 'sampleMultiBranchMerge'
-comment = '\[merge\]'
+comment = "\\[merge\\]"
 owner = 'CentOS-PaaS-SIG'
 repo = 'contra-env-sample-project'
 
