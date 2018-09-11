@@ -1,5 +1,7 @@
 dslVar = 'CentOS-PaaS-SIG/contra-env-sample-project'
-contraLib = 'openshift/contra-lib'
+contraLib = 'joejstuart/contra-lib'
+// contraBranch = 'refs/tags/v0.0.2'
+contraBranch = 'packageUpdate'
 
 dslVarTarget = dslVar.split('/')[1]
 contraLibTarget = contraLib.split('/')[1]
@@ -19,7 +21,7 @@ job("seed") {
             remote {
                 github(contraLib)
             }   
-            branches('refs/tags/v0.0.2')
+            branches(contraBranch)
             extensions {
                 relativeTargetDirectory(contraLibTarget)
             }   
