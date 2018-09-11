@@ -1,4 +1,4 @@
-import org.centos.sample.jobdsl.MultiBranch
+import org.centos.jobdsl.multiBranchJob
 
 
 jobName = 'sampleMultiBranchMerge'
@@ -13,6 +13,6 @@ multibranchPipelineJob(jobName) {
             repository(repo)
         }
     }   
-    configure MultiBranch.commentTrigger(comment)
+    configure multiBranchJob.commentTrigger(comment)
 }
 
