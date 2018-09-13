@@ -26,7 +26,7 @@ jobs.each { name, values ->
         job.addComment(values['comment'])
     }
     if (values['scriptPath']) {
-        job.scriptPath(values['scriptPath'])
+        job.addScriptPath(values['scriptPath'])
     }
     job.discardOldBranches()
 }
