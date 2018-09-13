@@ -10,7 +10,8 @@ def jobs = [
         'MultiBranchWithMergeTrigger': [
                 'comment': "\\[merge\\]",
                 'owner': 'CentOS-PaaS-SIG',
-                'name': 'contra-env-sample-project'
+                'name': 'contra-env-sample-project',
+                'scriptPath': 'JenkinsfileMerge'
         ],
         'BasicMutliBranchJob': [
                 'owner': 'CentOS-PaaS-SIG',
@@ -23,6 +24,9 @@ jobs.each { name, values ->
     job.addGitHub(values['name'], values['owner'])
     if (values['comment']) {
         job.addComment(values['comment'])
+    }
+    if (values['scriptPath']) {
+        job.scriptPath(values['scriptPath'])
     }
     job.discardOldBranches()
 }
