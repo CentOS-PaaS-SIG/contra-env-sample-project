@@ -10,8 +10,11 @@ def jobs = [
         'BasicMutliBranchJob': [
                 'owner': 'CentOS-PaaS-SIG',
                 'name': 'ci-pipeline'
+        ],
+        'BasicMutliBranchJob2': [
+                'owner': 'CentOS-PaaS-SIG',
+                'name': 'ci-pipeline'
         ]
-
 ]
 
 jobs.each { name, values ->
