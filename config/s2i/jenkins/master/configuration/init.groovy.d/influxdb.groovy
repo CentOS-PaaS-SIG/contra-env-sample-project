@@ -9,6 +9,7 @@ import java.util.logging.Logger
 
 def logger = Logger.getLogger("")
 
+env = System.getenv()
 if (env['ENABLE_INFLUXDB'] == 'true') {
     logger.info('Configuring Influxdb plugin')
     def influxdb = Jenkins.instance.getDescriptorByType(jenkinsci.plugins.influxdb.DescriptorImpl)
