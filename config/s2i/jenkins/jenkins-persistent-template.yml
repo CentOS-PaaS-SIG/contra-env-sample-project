@@ -296,7 +296,7 @@ parameters:
 - name: DSL_JOB_REPO
   displayName: DSL job repo
   description: The repository of dsl jobs
-  value: 'https://github.com/CentOS-PaaS-SIG/contra-env-sample-project.git'
+  value: 'CentOS-PaaS-SIG/contra-env-sample-project'
 - name: ENABLE_INFLUXDB
   displayName: Enable Influxdb
   description: Install and configure the Influxdb plugin
