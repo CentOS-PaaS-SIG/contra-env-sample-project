@@ -1,18 +1,12 @@
 import org.centos.contra.jobdsl.MultiBranchJob
 
 
-jobName = 'sampleMultiBranchMerge'
+jobName = 'sampleMultiBranchMerge2'
 comment = "\\[merge\\]"
 rOwner = 'CentOS-PaaS-SIG'
 rName = 'contra-env-sample-project'
 
-multibranchPipelineJob(jobName) {
-    branchSources {
-        github {
-            repoOwner(rOwner)
-            repository(rName)
-        }
-    }   
-    configure MultiBranchJob.commentTrigger(comment)
-}
+def m = new MultiBranchJob(this, jobName)
+m.addGitHub(rName, rOwner)
+m.addComment(comment)
 
