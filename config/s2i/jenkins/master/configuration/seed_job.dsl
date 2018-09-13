@@ -5,7 +5,9 @@ contraBranch = 'master'
 dslVarTarget = dslVar.split('/')[1]
 contraLibTarget = contraLib.split('/')[1]
 
-job("seed") {
+dslJob = 'dsl_seed'
+
+job(dslJob) {
     properties {
         githubProjectUrl("https://github.com/${dslVar}")
     }
@@ -40,4 +42,6 @@ job("seed") {
         }
     }
 }
+
+queue(dslJob)
 
