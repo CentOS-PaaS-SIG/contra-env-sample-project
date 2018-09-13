@@ -7,6 +7,11 @@ def jobs = [
                 'owner': 'CentOS-PaaS-SIG',
                 'name': 'contra-env-sample-project'
         ],
+        'MultiBranchWithMergeTrigger': [
+                'comment': "\\[merge\\]",
+                'owner': 'CentOS-PaaS-SIG',
+                'name': 'contra-env-sample-project'
+        ],
         'BasicMutliBranchJob': [
                 'owner': 'CentOS-PaaS-SIG',
                 'name': 'ci-pipeline'
