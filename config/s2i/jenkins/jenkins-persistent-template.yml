@@ -2,7 +2,7 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: jenkins-persistent
+  name: "${JENKINS_SERVICE_NAME}-persistent"
   creationTimestamp:
   annotations:
     openshift.io/display-name: Jenkins (Persistent)
@@ -27,7 +27,7 @@ objects:
   metadata:
     labels:
       app: jenkins
-    name: jenkins
+    name: ${JENKINS_SERVICE_NAME}
 - kind: Route
   apiVersion: v1
   metadata:
@@ -55,12 +55,12 @@ objects:
   metadata:
     labels:
       app: jenkins
-    name: jenkins
+    name: "${JENKINS_SERVICE_NAME}"
   spec:
     output:
       to:
         kind: ImageStreamTag
-        name: jenkins:latest
+        name: "${JENKINS_SERVICE_NAME}:latest"
     resources:
       limits:
         memory: ${MEMORY_LIMIT}
@@ -99,7 +99,7 @@ objects:
       imageChangeParams:
         automatic: true
         containerNames:
-        - jenkins
+        - "${JENKINS_SERVICE_NAME}"
         from:
           kind: ImageStreamTag
           name: "${JENKINS_IMAGE_STREAM_TAG}"
@@ -117,7 +117,7 @@ objects:
       spec:
         serviceAccountName: "${JENKINS_SERVICE_NAME}"
         containers:
-        - name: jenkins
+        - name: "${JENKINS_SERVICE_NAME}"
           image: " "
           readinessProbe:
             timeoutSeconds: 3
@@ -322,4 +322,4 @@ parameters:
   description: The database to use for metrics
   value: db0
 labels:
-  template: jenkins-persistent
+  template: "${JENKINS_SERVICE_NAME}-persistent"
