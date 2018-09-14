@@ -12,6 +12,5 @@ jobs.each { name, values ->
     def job = new PipelineJob(this, name)
     job.ciEvent(values['ciEvent'])
     job.addGit(values['git'])
-    job.gitHubTrigger()
     job.logRotator()
 }
