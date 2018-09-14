@@ -1,11 +1,13 @@
-dslVar = 'CentOS-PaaS-SIG/contra-env-sample-project'
+dslVar = System.getenv('DSL_JOB_REPO') ?: 'CentOS-PaaS-SIG/contra-env-sample-project'
 contraLib = 'openshift/contra-lib'
 contraBranch = 'master'
 
 dslVarTarget = dslVar.split('/')[1]
 contraLibTarget = contraLib.split('/')[1]
 
-job("seed") {
+dslJob = 'dsl_seed'
+
+job(dslJob) {
     properties {
         githubProjectUrl("https://github.com/${dslVar}")
     }
@@ -40,4 +42,6 @@ job("seed") {
         }
     }
 }
+
+queue(dslJob)
 
