@@ -1,5 +1,4 @@
 import org.centos.contra.jobdsl.PipelineJob
-import org.centos.contra.jobdsl.Triggers
 
 
 def jobs = [
