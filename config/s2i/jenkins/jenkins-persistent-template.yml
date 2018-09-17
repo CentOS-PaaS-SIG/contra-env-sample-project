@@ -27,7 +27,7 @@ objects:
   metadata:
     labels:
       app: jenkins
-    name: ${JENKINS_SERVICE_NAME}
+    name: "${JENKINS_SERVICE_NAME}"
 - kind: Route
   apiVersion: v1
   metadata:
