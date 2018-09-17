@@ -10,8 +10,7 @@ def jobs = [
 
 jobs.each { name, values ->
     def job = new PipelineJob(this, name)
-    //def jobTrigger = Triggers.fedMsgTrigger('org.fedoraproject', 'fedora-fedmsg', ['check1': 'value1'])
-    def jobTrigger = Triggers.gitHubTrigger()
+    def jobTrigger = Triggers.fedMsgTrigger('org.fedoraproject', 'fedora-fedmsg', ['check1': 'value1'])
     job.trigger(jobTrigger)
     job.addGit(values['git'])
     job.logRotate()
