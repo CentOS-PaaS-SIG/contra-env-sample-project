@@ -13,5 +13,5 @@ jobs.each { name, values ->
     def jobTrigger = Triggers.fedMsgTrigger('org.fedoraproject', 'fedora-fedmsg', ['check1': 'value1'])
     job.trigger(jobTrigger)
     job.addGit(values['git'])
-    job.logRotator()
+    job.logRotate()
 }
