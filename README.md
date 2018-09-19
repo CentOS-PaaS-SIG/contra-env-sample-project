@@ -5,12 +5,12 @@ This is a sample project to use for OpenShift s2i Templates and Jenkins Pipeline
 This project by default will create a freestyle job called "dsl_seed" that is meant to load your pipeline repo along with 
 [contra-lib](https://github.com/openshift/contra-lib). Contra-lib is loaded to provide library support. To use the dsl_seed job,
 follow these steps.
-##### Create the directories 
+#### Create the directories 
 
 ```bash
 mkdir -p your-pipeline-repo/src/jobs
 ```
-##### Add a script to the jobs directory
+#### Add a script to the jobs directory
 
 This example creates a job called samplePipelineJob and uses openshift/contra-lib. 
 
@@ -24,7 +24,7 @@ job.addGit([branch: 'master', repoUrl: 'https://github.com/CentOS-PaaS-SIG/contr
 job.logRotate()
 
 ```
-##### Install Jenkins
+#### Install Jenkins
 
 Use the provided OpenShift template and provide the link to your pipeline repo.
 
