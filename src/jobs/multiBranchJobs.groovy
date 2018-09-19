@@ -3,7 +3,7 @@ import org.centos.contra.jobdsl.MultiBranchJob
 
 def jobs = [
         'MultiBranchWithCommentTrigger': [
-                'comment': "\\[test1\\]",
+                'comment': "\\[test\\]",
                 'owner': 'CentOS-PaaS-SIG',
                 'name': 'contra-env-sample-project'
         ],
