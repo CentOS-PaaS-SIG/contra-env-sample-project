@@ -24,7 +24,9 @@ job.addGit([branch: 'master', repoUrl: 'https://github.com/CentOS-PaaS-SIG/contr
 job.logRotate()
 
 ```
-- Install Jenkins using the provided OpenShift template and providing the link to your pipeline repo.
+##### Install Jenkins
+
+Use the provided OpenShift template and provide the link to your pipeline repo.
 
 ```bash
 oc new-app -f jenkins-persistent.yml -p DSL_JOB_REPO=githubOrg/pipeline-repo
