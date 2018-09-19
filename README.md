@@ -12,7 +12,7 @@ mkdir -p your-pipeline-repo/src/jobs
 ```
 #### Add a script to the jobs directory
 
-This example creates a job called samplePipelineJob and uses openshift/contra-lib. 
+This example creates a job called samplePipelineJob and leverages the class PipelineJob in openshift/contra-lib. 
 
 ```groovy
 import org.centos.contra.jobdsl.PipelineJob
