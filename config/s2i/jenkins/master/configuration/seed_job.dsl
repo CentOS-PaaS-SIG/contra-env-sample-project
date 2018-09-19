@@ -9,10 +9,16 @@ contraLibTarget = contraLib.split('/')[1]
 dslJob = 'dsl_seed'
 
 job(dslJob) {
-    properties {
-        githubProjectUrl("https://github.com/${dslVar}")
-    }
     multiscm {
+        git {
+            remote {
+                github(contraLib)
+            }   
+            branches(contraBranch)
+            extensions {
+                relativeTargetDirectory(contraLibTarget)
+            }   
+        }   
         git {
             remote {
                 github(dslVar)
@@ -22,15 +28,6 @@ job(dslJob) {
             extensions {
                 relativeTargetDirectory(dslVarTarget)
             }
-        }   
-        git {
-            remote {
-                github(contraLib)
-            }   
-            branches(contraBranch)
-            extensions {
-                relativeTargetDirectory(contraLibTarget)
-            }   
         }   
     }   
     triggers {
