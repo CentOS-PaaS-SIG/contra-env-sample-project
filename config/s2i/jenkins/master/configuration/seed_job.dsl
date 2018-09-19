@@ -1,4 +1,5 @@
 dslVar = System.getenv('DSL_JOB_REPO') ?: 'CentOS-PaaS-SIG/contra-env-sample-project'
+dslBranch = System.getenv('DSL_REPO_BRANCH') ?: 'master'
 contraLib = 'openshift/contra-lib'
 contraBranch = 'master'
 
@@ -17,6 +18,7 @@ job(dslJob) {
                 github(dslVar)
 
             }
+            branches(dslBranch)
             extensions {
                 relativeTargetDirectory(dslVarTarget)
             }
