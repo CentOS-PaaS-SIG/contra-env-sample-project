@@ -326,4 +326,4 @@ parameters:
   description: The database to use for metrics
   value: db0
 labels:
-  template: jenkins-persistent-dev
+  template: jenkins-persistent
