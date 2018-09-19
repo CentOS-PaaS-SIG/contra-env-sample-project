@@ -252,10 +252,10 @@ parameters:
 - description: Git source URI for Jenkins S2I
   name: REPO_URL
   required: true
-  value: https://github.com/joejstuart/contra-env-sample-project
+  value: https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
 - description: Git branch/tag reference
   name: REPO_REF
-  value: paramFix
+  value: master
 - description: Path within Git project to build; empty for root project directory.
   name: CONTEXT_DIR
   value: config/s2i/jenkins/master
@@ -296,7 +296,7 @@ parameters:
 - name: DSL_JOB_REPO
   displayName: DSL job repo
   description: The repository of dsl jobs
-  value: 'joejstuart/contra-env-sample-project'
+  value: 'CentOS-PaaS-SIG/contra-env-sample-project'
 - name: DSL_REPO_BRANCH
   displayName: DSL repo branch
   description: The branch to use for job dsl repository
