@@ -10,6 +10,7 @@ import org.jenkinsci.plugins.workflow.libs.GlobalLibraries
 import org.jenkinsci.plugins.workflow.libs.LibraryConfiguration
 import org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever
 import java.util.logging.Logger
+import groovy.io.FileType
 
 
 def logger = Logger.getLogger("")
@@ -34,31 +35,25 @@ envVars.put("GIT_SSL_NO_VERIFY", "true")
 instance.save()
 
 logger.info("Configuring Global Pipeline Libraries")
-def sharedLibConfigs = [
-        new Tuple(
-                "contra-library",
-                "https://github.com/CentOS-PaaS-SIG/contra-env-sample-project",
-                ["+refs/heads/*:refs/remotes/origin/*  +refs/pull/*:refs/remotes/origin/pr/*"]
-        ),
-        new Tuple(
-                "contra-lib",
-                "https://github.com/openshift/contra-lib",
-                ["+refs/heads/*:refs/remotes/origin/*  +refs/pull/*:refs/remotes/origin/pr/*"]
-        )
-]
-
-// remove existing libraries to make sure we always use the latest configuration coming from this file
-// this will only remove libraries with matching names; any other libraries will stay untouched
-GlobalLibraries.get().getLibraries().removeAll() { lib ->
-    lib.name in sharedLibConfigs.collect { it.get(0) }
+// Get list of all sharedLib files
+def sharedLibConfigs = []
+def sharedLibDir = new File("/var/lib/jenkins/init.groovy.d/sharedLibConfigs/")
+sharedLibDir.eachFileRecurse (FileType.FILES) { file ->
+    sharedLibConfigs << file.getPath()
 }
 
 sharedLibConfigs.each { libConfig ->
-    String libName = libConfig.get(0)
+    def libVals = readJSON file: libConfig
+    String libName = libVals['name']
+    logger.info("Removing existing global library '${libName}'")
+    // Remove existing library with this name to ensure latest configuration
+    GlobalLibraries.get().getLibraries().removeAll() { lib ->
+        lib.name == libName
+    }
     logger.info("Adding Global Pipeline library '${libName}'")
-    String gitUrl = libConfig.get(1)
+    String gitUrl = libVals['url']
     GitSCMSource source= new GitSCMSource(libName, gitUrl, null, null, null, false)
-    String[] refSpecs = libConfig.get(2)
+    String[] refSpecs = libVals['refspec']
     if (refSpecs) {
         RefSpecsSCMSourceTrait refspecs = new RefSpecsSCMSourceTrait(refSpecs)
         source.setTraits([refspecs])
