@@ -297,6 +297,10 @@ parameters:
   displayName: DSL job repo
   description: The repository of dsl jobs
   value: 'CentOS-PaaS-SIG/contra-env-sample-project'
+- name: DSL_REPO_BRANCH
+  displayName: DSL repo branch
+  description: The branch to use for job dsl repository
+  value: master
 - name: ENABLE_INFLUXDB
   displayName: Enable Influxdb
   description: Install and configure the Influxdb plugin
