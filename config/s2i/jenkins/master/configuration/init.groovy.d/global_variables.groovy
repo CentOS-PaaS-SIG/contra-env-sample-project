@@ -11,6 +11,7 @@ import org.jenkinsci.plugins.workflow.libs.LibraryConfiguration
 import org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever
 import java.util.logging.Logger
 import groovy.io.FileType
+import org.json.JSONObject
 
 
 def logger = Logger.getLogger("")
@@ -36,14 +37,9 @@ instance.save()
 
 logger.info("Configuring Global Pipeline Libraries")
 // Get list of all sharedLib files
-def sharedLibConfigs = []
 def sharedLibDir = new File("/var/lib/jenkins/init.groovy.d/sharedLibConfigs/")
-sharedLibDir.eachFileRecurse (FileType.FILES) { file ->
-    sharedLibConfigs << file.getPath()
-}
-
-sharedLibConfigs.each { libConfig ->
-    def libVals = readJSON file: libConfig
+sharedLibDir.eachFileRecurse (FileType.FILES) { libConfig ->
+    JSONObject libVals = new JSONObject(libConfig.getText())
     String libName = libVals['name']
     logger.info("Removing existing global library '${libName}'")
     // Remove existing library with this name to ensure latest configuration
@@ -53,7 +49,8 @@ sharedLibConfigs.each { libConfig ->
     logger.info("Adding Global Pipeline library '${libName}'")
     String gitUrl = libVals['url']
     GitSCMSource source= new GitSCMSource(libName, gitUrl, null, null, null, false)
-    String[] refSpecs = libVals['refspec']
+    // This refspec stuff likely needs to be investigated further
+    String refSpecs = libVals['refspec']
     if (refSpecs) {
         RefSpecsSCMSourceTrait refspecs = new RefSpecsSCMSourceTrait(refSpecs)
         source.setTraits([refspecs])
