@@ -31,3 +31,11 @@ Use the provided OpenShift template and provide the link to your pipeline repo.
 ```bash
 oc new-app -f jenkins-persistent.yml -p DSL_JOB_REPO=githubOrg/pipeline-repo
 ```
+
+## Custom Shared Libraries
+This project adds contra-lib and contra-library as shared libraries to the Jenkins master automatically.
+However, the user can change which shared libraries are added.
+To do so, navigate to [sharedLibConfigs](https://github.com/CentOS-PaaS-SIG/contra-env-sample-project/blob/master/config/s2i/jenkins/master/configuration/init.groovy.d/sharedLibConfigs).
+Each json file represents a shared library.
+Any number of json files can be added or removed from this directory.
+Supported fields include the name of the library (required), the url to it (required), and the following optional fields: refspec, implicit, and branch.
