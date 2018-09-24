@@ -1,0 +1,5 @@
+{
+    "name": "contra-library",
+    "url": "https://github.com/CentOS-PaaS-SIG/contra-env-sample-project",
+    "refspec": "+refs/heads/*:refs/remotes/origin/*  +refs/pull/*:refs/remotes/origin/pr/*"
+}
