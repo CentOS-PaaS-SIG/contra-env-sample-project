@@ -56,7 +56,7 @@ sharedLibDir.eachFileRecurse (FileType.FILES) { libConfig ->
         source.setTraits([refspecs])
     }
     LibraryConfiguration lib = new LibraryConfiguration(libName, new SCMSourceRetriever(source))
-    lib.implicit = libVals['implicit'] ?: false
-    lib.defaultVersion = libVals['branch'] ?: "master"
+    lib.implicit = libVals.opt('implicit') ?: false
+    lib.defaultVersion = libVals.opt('branch') ?: "master"
     GlobalLibraries.get().getLibraries().add(lib)
 }
