@@ -28,7 +28,7 @@ git clone https://github.com/CentOS-PaaS-SIG/contra-env-setup.git
 /usr/bin/ansible-playbook -vv -i "localhost," ${base_dir}/contra-env-setup/playbooks/setup.yml -e user=root \
                           -e ansible_connection=local -e setup_nested_virt=false -e setup_playbook_hooks=true \
                           -e project_repo=${AUTHOR_REPO_URL} -e project_branch=${SOURCE_BRANCH} \
-                          --extra-vars='{"hooks": ["/home/debug_vars.yml"]}'
+                          -e start_minishift=true --extra-vars='{"hooks": ["/home/debug_vars.yml"]}'
 
 # Run tests with pytest
 python -m pytest ${base_dir}/test_contra_env_sample_project.py -v --junitxml=${log_dir}/contra_env_sample_project_centos7.xml > ${log_dir}/contra_env_sample_project_centos7.log
