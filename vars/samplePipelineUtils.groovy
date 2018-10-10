@@ -7,7 +7,6 @@ import org.contra.sample.pipeline.SamplePipelineUtils
 class samplePipelineUtils implements Serializable {
 
     def samplePipelineUtils = new SamplePipelineUtils()
-    def cimetrics
 
     /**
      *

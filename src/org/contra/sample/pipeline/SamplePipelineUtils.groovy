@@ -1,7 +1,7 @@
 #!/usr/bin/groovy
 package org.contra.sample.pipeline
 
-import org.centos.*
+
 
 /**
  * Library to execute script in container
