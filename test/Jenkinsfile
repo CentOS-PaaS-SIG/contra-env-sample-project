@@ -127,48 +127,42 @@ timestamps {
     // Start the containers and the pipeline in OpenShift
     deployOpenShiftTemplate(containersWithProps: containersWithProps, podName: podName, docker_repo_url: env.DOCKER_REPO_URL) {
         def buildResult = null
+        def currentStage = ""
 
-        timeout(time: 3, unit: 'HOURS') {
-
-            def currentStage = ""
-
-            ciPipeline(buildPrefix: 'contra-env-sample-project-ci-pipeline', sendMetrics: false) {
-                env.HOME = "/root"
-                try {
-                    currentStage = "test-contra-env-sample-project"
-                    stage(currentStage) {
-                        // Set stage specific vars
-                        stageVars = [PROJECT_REPO: env.PROJECT_REPO, PR_NUM: env.PR_NUM, AUTHOR_REPO_URL: env.AUTHOR_REPO_URL, SOURCE_BRANCH: env.SOURCE_BRANCH]
-                        handlePipelineStep('stageName': currentStage) {
-                            // Run contra-env-sample-project test
-                            executeInContainer(containerName: 'contra-env-sample-project-test-c7', containerScript: '/home/prepare_and_test.sh',
-                                    stageVars: stageVars)
-                        }
-                    }
-                } catch (e) {
-                    // Set build result
-                    buildResult = 'FAILURE'
-                    currentBuild.result = buildResult
-
-                    // Report the exception
-                    echo "Error: Exception from " + currentStage + ":"
-                    echo e.getMessage()
-
-                    // Throw the error
-                    throw e
-
-                } finally {
-                    // Set the current build result if not already set
-                    currentBuild.result = buildResult ?: 'SUCCESS'
-
-                    // Archive our artifacts
-                    samplePipelineUtils.getContainerLogsFromPod(OPENSHIFT_NAMESPACE, env.NODE_NAME)
-                    step([$class: 'ArtifactArchiver', allowEmptyArchive: true, artifacts: '*.xml,*.log,**/job.*,**/inventory.*', excludes: '**/*.example', fingerprint: true])
-
-                    // Archive JUnit results
-                    step([$class: 'JUnitResultArchiver', testResults: '*.xml'])
-
+        ciPipeline(buildPrefix: 'contra-env-sample-project-ci-pipeline', sendMetrics: false) {
+            env.HOME = "/root"
+            try {
+                currentStage = "test-contra-env-sample-project"
+                stage(currentStage) {
+                    // Set stage specific vars
+                    stageVars = [PROJECT_REPO: env.PROJECT_REPO, PR_NUM: env.PR_NUM, AUTHOR_REPO_URL: env.AUTHOR_REPO_URL, SOURCE_BRANCH: env.SOURCE_BRANCH]
+                    // Run contra-env-sample-project test
+                        executeInContainer(containerName: 'contra-env-sample-project-test-c7', containerScript: '/home/prepare_and_test.sh',
+                                           stageVars: stageVars)
                 }
+            } catch (e) {
+                // Set build result
+                buildResult = 'FAILURE'
+                currentBuild.result = buildResult
+
+                // Report the exception
+                echo "Error: Exception from " + currentStage + ":"
+                echo e.getMessage()
+
+                // Throw the error
+                throw e
+
+            } finally {
+                // Set the current build result if not already set
+                currentBuild.result = buildResult ?: 'SUCCESS'
+
+                // Archive our artifacts
+                samplePipelineUtils.getContainerLogsFromPod(OPENSHIFT_NAMESPACE, env.NODE_NAME)
+                step([$class: 'ArtifactArchiver', allowEmptyArchive: true, artifacts: '*.xml,*.log,**/job.*,**/inventory.*', excludes: '**/*.example', fingerprint: true])
+
+                // Archive JUnit results
+                step([$class: 'JUnitResultArchiver', testResults: '*.xml'])
+
             }
         }
     }
