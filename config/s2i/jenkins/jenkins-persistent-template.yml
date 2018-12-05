@@ -103,7 +103,6 @@ objects:
         from:
           kind: ImageStreamTag
           name: "${JENKINS_IMAGE_STREAM_TAG}"
-          namespace: "${NAMESPACE}"
         lastTriggeredImage: ''
     - type: ConfigChange
     replicas: 1
