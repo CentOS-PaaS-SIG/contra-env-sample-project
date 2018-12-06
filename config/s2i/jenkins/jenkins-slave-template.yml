@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Template
 labels:
-  template: jenkins-contra-sample-project-slave-builder
+  template: {{ item[1] }}-jenkins-contra-sample-project-slave-builder
 metadata:
   annotations:
     description: Contra Sample Slaves
