@@ -2,7 +2,7 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: jenkins-persistent
+  name: {{ item[1] }}-jenkins-persistent
   creationTimestamp:
   annotations:
     openshift.io/display-name: Jenkins (Persistent)
@@ -26,41 +26,19 @@ objects:
   kind: ImageStream
   metadata:
     labels:
-      app: jenkins
-    name: jenkins
-- kind: Route
-  apiVersion: v1
-  metadata:
-    name: "${JENKINS_SERVICE_NAME}"
-    creationTimestamp:
-  spec:
-    to:
-      kind: Service
-      name: "${JENKINS_SERVICE_NAME}"
-    tls:
-      termination: edge
-      insecureEdgeTerminationPolicy: Redirect
-- kind: PersistentVolumeClaim
-  apiVersion: v1
-  metadata:
-    name: "${JENKINS_SERVICE_NAME}"
-  spec:
-    accessModes:
-    - ReadWriteOnce
-    resources:
-      requests:
-        storage: "${VOLUME_CAPACITY}"
+      app: {{ item[1] }}-jenkins
+    name: {{ item[1] }}-jenkins
 - apiVersion: v1
   kind: BuildConfig
   metadata:
     labels:
-      app: jenkins
-    name: jenkins
+      app: {{ item[1] }}-jenkins
+    name: {{ item[1] }}-jenkins
   spec:
     output:
       to:
         kind: ImageStreamTag
-        name: jenkins:latest
+        name: {{ item[1] }}-jenkins:latest
     resources:
       limits:
         memory: ${MEMORY_LIMIT}
@@ -86,10 +64,32 @@ objects:
       type: ImageChange
   status:
     lastVersion: 0
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
+    creationTimestamp:
+  spec:
+    to:
+      kind: Service
+      name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Redirect
+- kind: PersistentVolumeClaim
+  apiVersion: v1
+  metadata:
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: "${VOLUME_CAPACITY}"
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
-    name: "${JENKINS_SERVICE_NAME}"
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
     creationTimestamp:
   spec:
     strategy:
@@ -103,19 +103,18 @@ objects:
         from:
           kind: ImageStreamTag
           name: "${JENKINS_IMAGE_STREAM_TAG}"
-          namespace: "${NAMESPACE}"
         lastTriggeredImage: ''
     - type: ConfigChange
     replicas: 1
     selector:
-      name: "${JENKINS_SERVICE_NAME}"
+      name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
     template:
       metadata:
         creationTimestamp:
         labels:
-          name: "${JENKINS_SERVICE_NAME}"
+          name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
       spec:
-        serviceAccountName: "${JENKINS_SERVICE_NAME}"
+        serviceAccountName: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
         containers:
         - name: jenkins
           image: " "
@@ -194,29 +193,29 @@ objects:
         volumes:
         - name: "${JENKINS_SERVICE_NAME}-data"
           persistentVolumeClaim:
-            claimName: "${JENKINS_SERVICE_NAME}"
+            claimName: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
         restartPolicy: Always
         dnsPolicy: ClusterFirst
 - kind: ServiceAccount
   apiVersion: v1
   metadata:
-    name: "${JENKINS_SERVICE_NAME}"
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
     annotations:
-      serviceaccounts.openshift.io/oauth-redirectreference.jenkins: '{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"${JENKINS_SERVICE_NAME}"}}'
+      serviceaccounts.openshift.io/oauth-redirectreference.jenkins: '{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"{{ item[1] }}-${JENKINS_SERVICE_NAME}"}}'
 - kind: RoleBinding
   apiVersion: v1
   metadata:
-    name: "${JENKINS_SERVICE_NAME}_edit"
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}_edit"
   groupNames:
   subjects:
   - kind: ServiceAccount
-    name: "${JENKINS_SERVICE_NAME}"
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
   roleRef:
     name: edit
 - kind: Service
   apiVersion: v1
   metadata:
-    name: "${JNLP_SERVICE_NAME}"
+    name: "{{ item[1] }}-${JNLP_SERVICE_NAME}"
   spec:
     ports:
     - name: agent
@@ -225,15 +224,15 @@ objects:
       targetPort: 50000
       nodePort: 0
     selector:
-      name: "${JENKINS_SERVICE_NAME}"
+      name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
     type: ClusterIP
     sessionAffinity: None
 - kind: Service
   apiVersion: v1
   metadata:
-    name: "${JENKINS_SERVICE_NAME}"
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
     annotations:
-      service.alpha.openshift.io/dependencies: '[{"name": "${JNLP_SERVICE_NAME}",
+      service.alpha.openshift.io/dependencies: '[{"name": "{{ item[1] }}-${JNLP_SERVICE_NAME}",
         "namespace": "", "kind": "Service"}]'
       service.openshift.io/infrastructure: 'true'
     creationTimestamp:
@@ -245,7 +244,7 @@ objects:
       targetPort: 8080
       nodePort: 0
     selector:
-      name: "${JENKINS_SERVICE_NAME}"
+      name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
     type: ClusterIP
     sessionAffinity: None
 parameters:
@@ -281,14 +280,10 @@ parameters:
   description: Volume space available for data, e.g. 512Mi, 2Gi.
   value: 1Gi
   required: true
-- name: NAMESPACE
-  displayName: Jenkins ImageStream Namespace
-  description: The OpenShift Namespace where the Jenkins ImageStream resides.
-  value: contra-sample-project
 - name: JENKINS_IMAGE_STREAM_TAG
   displayName: Jenkins ImageStreamTag
   description: Name of the ImageStreamTag to be used for the Jenkins image.
-  value: jenkins:latest
+  value: {{ item[1] }}-jenkins:latest
 - name: LOAD_SEED_JOB
   displayName: Load seed job
   description: Whether to load a dsl seed job
@@ -326,4 +321,4 @@ parameters:
   description: The database to use for metrics
   value: db0
 labels:
-  template: jenkins-persistent
+  template: {{ item[1] }}-jenkins-persistent
