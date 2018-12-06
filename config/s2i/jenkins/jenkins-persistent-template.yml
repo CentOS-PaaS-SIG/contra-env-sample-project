@@ -26,24 +26,24 @@ objects:
   kind: ImageStream
   metadata:
     labels:
-      app: jenkins
-    name: jenkins
+      app: {{ item[1] }}-jenkins
+    name: {{ item[1] }}-jenkins
 - kind: Route
   apiVersion: v1
   metadata:
-    name: "${JENKINS_SERVICE_NAME}"
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
     creationTimestamp:
   spec:
     to:
       kind: Service
-      name: "${JENKINS_SERVICE_NAME}"
+      name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
     tls:
       termination: edge
       insecureEdgeTerminationPolicy: Redirect
 - kind: PersistentVolumeClaim
   apiVersion: v1
   metadata:
-    name: "${JENKINS_SERVICE_NAME}"
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
   spec:
     accessModes:
     - ReadWriteOnce
@@ -54,13 +54,13 @@ objects:
   kind: BuildConfig
   metadata:
     labels:
-      app: jenkins
-    name: jenkins
+      app: {{ item[1] }}-jenkins
+    name: {{ item[1] }}-jenkins
   spec:
     output:
       to:
         kind: ImageStreamTag
-        name: jenkins:latest
+        name: {{ item[1] }}-jenkins:latest
     resources:
       limits:
         memory: ${MEMORY_LIMIT}
@@ -89,7 +89,7 @@ objects:
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
-    name: "${JENKINS_SERVICE_NAME}"
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
     creationTimestamp:
   spec:
     strategy:
@@ -107,14 +107,14 @@ objects:
     - type: ConfigChange
     replicas: 1
     selector:
-      name: "${JENKINS_SERVICE_NAME}"
+      name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
     template:
       metadata:
         creationTimestamp:
         labels:
-          name: "${JENKINS_SERVICE_NAME}"
+          name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
       spec:
-        serviceAccountName: "${JENKINS_SERVICE_NAME}"
+        serviceAccountName: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
         containers:
         - name: jenkins
           image: " "
@@ -193,29 +193,29 @@ objects:
         volumes:
         - name: "${JENKINS_SERVICE_NAME}-data"
           persistentVolumeClaim:
-            claimName: "${JENKINS_SERVICE_NAME}"
+            claimName: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
         restartPolicy: Always
         dnsPolicy: ClusterFirst
 - kind: ServiceAccount
   apiVersion: v1
   metadata:
-    name: "${JENKINS_SERVICE_NAME}"
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
     annotations:
-      serviceaccounts.openshift.io/oauth-redirectreference.jenkins: '{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"${JENKINS_SERVICE_NAME}"}}'
+      serviceaccounts.openshift.io/oauth-redirectreference.jenkins: '{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"{{ item[1] }}-${JENKINS_SERVICE_NAME}"}}'
 - kind: RoleBinding
   apiVersion: v1
   metadata:
-    name: "${JENKINS_SERVICE_NAME}_edit"
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}_edit"
   groupNames:
   subjects:
   - kind: ServiceAccount
-    name: "${JENKINS_SERVICE_NAME}"
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
   roleRef:
     name: edit
 - kind: Service
   apiVersion: v1
   metadata:
-    name: "${JNLP_SERVICE_NAME}"
+    name: "{{ item[1] }}-${JNLP_SERVICE_NAME}"
   spec:
     ports:
     - name: agent
@@ -224,15 +224,15 @@ objects:
       targetPort: 50000
       nodePort: 0
     selector:
-      name: "${JENKINS_SERVICE_NAME}"
+      name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
     type: ClusterIP
     sessionAffinity: None
 - kind: Service
   apiVersion: v1
   metadata:
-    name: "${JENKINS_SERVICE_NAME}"
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
     annotations:
-      service.alpha.openshift.io/dependencies: '[{"name": "${JNLP_SERVICE_NAME}",
+      service.alpha.openshift.io/dependencies: '[{"name": "{{ item[1] }}-${JNLP_SERVICE_NAME}",
         "namespace": "", "kind": "Service"}]'
       service.openshift.io/infrastructure: 'true'
     creationTimestamp:
@@ -244,7 +244,7 @@ objects:
       targetPort: 8080
       nodePort: 0
     selector:
-      name: "${JENKINS_SERVICE_NAME}"
+      name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
     type: ClusterIP
     sessionAffinity: None
 parameters:
@@ -321,4 +321,4 @@ parameters:
   description: The database to use for metrics
   value: db0
 labels:
-  template: jenkins-persistent
+  template: {{ item[1] }}-jenkins-persistent

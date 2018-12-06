@@ -13,20 +13,20 @@ objects:
   kind: ImageStream
   metadata:
     annotations:
-      slave-label: jenkins-contra-sample-project-slave jenkins-contra-slave contra-slave
+      slave-label: {{ item[1] }}-jenkins-contra-sample-project-slave {{ item[1] }}-jenkins-contra-slave {{ item[1] }}-contra-slave
     labels:
-      role: jenkins-slave
-    name: jenkins-contra-sample-project-slave
+      role: {{ item[1] }}-jenkins-slave
+    name: {{ item[1] }}-jenkins-contra-sample-project-slave
   spec: {}
 - apiVersion: v1
   kind: BuildConfig
   metadata:
-    name: jenkins-contra-sample-project-slave
+    name: {{ item[1] }}-jenkins-contra-sample-project-slave
   spec:
     output:
       to:
         kind: ImageStreamTag
-        name: jenkins-contra-sample-project-slave:latest
+        name: {{ item[1] }}-jenkins-contra-sample-project-slave:latest
     resources: {}
     source:
       contextDir: ${CONTEXTDIR}
